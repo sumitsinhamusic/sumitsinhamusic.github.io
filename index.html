@@ -81,10 +81,13 @@
     /* Now Playing Bar (single shared audio) */
     /* FLOATING DRAGGABLE MINI PLAYER */
 .now-playing{
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  width:330px;
+  position: fixed;
+  left: auto;
+  top: auto;
+  bottom: 80px;
+  right: 20px;
+  transform: none;
+  touch-action: none;
   background:#111;
   color:#fff;
   display:flex;
@@ -93,7 +96,7 @@
   padding:10px 14px;
   border-radius:14px;
   box-shadow:0 10px 30px rgba(0,0,0,.4);
-  z-index:999;
+  z-index:9999;
   cursor:move;
   user-select:none;
   flex:1;
@@ -110,6 +113,29 @@
       background:#1db954; color:#fff; border:none; border-radius:5px; cursor:pointer;
       padding:6px 10px; font-weight:bold;
     }
+    @media (max-width: 768px) {
+  .now-playing {
+    width: 92%;
+    left: 4%;
+    right: auto;
+    bottom: 12px;
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .now-playing .title {
+    max-width: 100%;
+    font-size: 14px;
+  }
+
+  .controls button {
+    font-size: 18px;
+  }
+
+  .seek {
+    width: 100%;
+  }
+}
     .now-playing button:hover { background:#1ed760; }
     .now-playing audio { display: none; }
   </style>
@@ -477,19 +503,23 @@ mini.addEventListener("touchstart", dragStart, { passive: false });
 function dragMove(e) {
   if (!isDragging) return;
 
-  let clientX, clientY;
-  if (e.type === "touchmove") {
-    clientX = e.touches[0].clientX;
-    clientY = e.touches[0].clientY;
-  } else {
-    clientX = e.clientX;
-    clientY = e.clientY;
-  }
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-  mini.style.left = startLeft + (clientX - startX) + "px";
-  mini.style.top  = startTop  + (clientY - startY) + "px";
+  let left = clientX - mini.getBoundingClientRect().left;;
+  let top = clientY - mini.getBoundingClientRect().top;
 
-  e.preventDefault();
+  const maxX = window.innerWidth - mini.offsetWidth;
+  const maxY = window.innerHeight - mini.offsetHeight;
+
+  left = Math.max(10, Math.min(left, maxX - 10));
+  top = Math.max(10, Math.min(top, maxY - 10));
+
+  mini.style.left = left + "px";
+  mini.style.top = top + "px";
+
+  mini.style.right = "auto";
+  mini.style.bottom = "auto";
 }
 
 document.addEventListener("mousemove", dragMove);
@@ -524,6 +554,20 @@ document.querySelectorAll("nav a").forEach(link => {
     }
   });
 });
+function adjustMiniForDevice() {
+  if (window.innerWidth <= 768) {
+    mini.classList.add("mobile");
+  } else {
+    mini.classList.remove("mobile");
+  }
+}
+
+window.addEventListener("resize", adjustMiniForDevice);
+adjustMiniForDevice();
+mini.addEventListener("click", e => {
+  e.stopPropagation();
+});
+
 /* ===== AUTO PLAY SONG FROM SHARED URL ===== */
 window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);

@@ -4,16 +4,108 @@
   <meta charset="UTF-8">
   <title>Sumit Sinha Music</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; margin:0; }
-    h1 { color: #333; text-align:center; padding-top:20px; }
-    nav { background:#333; padding:10px; text-align:center; }
-    nav a { color:white; margin:0 15px; text-decoration:none; font-weight:bold; }
-    nav a:hover { text-decoration:underline; }
-    .song { margin: 40px; text-align:center; }
-    audio { width: 300px; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1db954, #191414);
+      color: #fff;
+    }
+
+    header {
+      background: #000;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    nav {
+      background: #111;
+      padding: 10px;
+      text-align: center;
+    }
+
+    nav a {
+      color: #1db954;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: #fff;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: rgba(0,0,0,0.7);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 32px;
+    }
+
+    .song {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #222;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      transition: transform 0.2s;
+    }
+
+    .song:hover {
+      transform: scale(1.02);
+      background: #333;
+    }
+
+    .song h3 {
+      margin: 0;
+      font-size: 18px;
+      flex: 1;
+      text-align: left;
+    }
+
+    audio {
+      flex: 0 0 300px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #000;
+      margin-top: 40px;
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .highlight button {
+      background: #1db954;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+      color: #fff;
+    }
+
+    .highlight button:hover {
+      background: #1ed760;
+    }
   </style>
 </head>
 <body>
+  <header>🎵 Sumit Sinha Music 🎵</header>
+
   <!-- Navigation Menu -->
   <nav>
     <a href="#adhuri">Adhuri Kahani</a>
@@ -21,42 +113,55 @@
     <a href="#naamtera">Naam Tera Saanson Mein Hai</a>
   </nav>
 
-  <h1>🎵 Welcome to Sumit Sinha Music 🎵</h1>
-  <p style="text-align:center;">My official music website featuring Bollywood-inspired romantic and devotional songs.</p>
+  <div class="container">
+    <h1>Bollywood-inspired Romantic & Devotional Songs</h1>
 
-  <!-- Song 1 -->
-  <div class="song">
-    <h3>Adhuri Kahani</h3>
-    <audio id="adhuri" controls>
-      <source src="Adhuri Kahani.mp3" type="audio/mpeg">
-    </audio>
+    <!-- Song 1 -->
+    <div class="song" id="adhuri-block">
+      <h3>Adhuri Kahani</h3>
+      <audio id="adhuri" controls>
+        <source src="Adhuri Kahani.mp3" type="audio/mpeg">
+      </audio>
+      <div class="highlight" id="adhuri-play" style="display:none;">
+        <button onclick="document.getElementById('adhuri').play()">▶ Play Adhuri Kahani</button>
+      </div>
+    </div>
+
+    <!-- Song 2 -->
+    <div class="song" id="junoon-block">
+      <h3>Junoon Hai Mere Khoon Mein (Remix)</h3>
+      <audio id="junoon" controls>
+        <source src="Junoon Hai Mere Khoon Mein-Remix.wav" type="audio/wav">
+      </audio>
+      <div class="highlight" id="junoon-play" style="display:none;">
+        <button onclick="document.getElementById('junoon').play()">▶ Play Junoon Hai Mere Khoon Mein</button>
+      </div>
+    </div>
+
+    <!-- Song 3 -->
+    <div class="song" id="naamtera-block">
+      <h3>Naam Tera Saanson Mein Hai</h3>
+      <audio id="naamtera" controls>
+        <source src="Naam Tera Saanson Mein Hai.mp3" type="audio/mpeg">
+      </audio>
+      <div class="highlight" id="naamtera-play" style="display:none;">
+        <button onclick="document.getElementById('naamtera').play()">▶ Play Naam Tera Saanson Mein Hai</button>
+      </div>
+    </div>
   </div>
 
-  <!-- Song 2 -->
-  <div class="song">
-    <h3>Junoon Hai Mere Khoon Mein (Remix)</h3>
-    <audio id="junoon" controls>
-      <source src="Junoon Hai Mere Khoon Mein-Remix.wav" type="audio/wav">
-    </audio>
-  </div>
-
-  <!-- Song 3 -->
-  <div class="song">
-    <h3>Naam Tera Saanson Mein Hai</h3>
-    <audio id="naamtera" controls>
-      <source src="Naam Tera Saanson Mein Hai.mp3" type="audio/mpeg">
-    </audio>
-  </div>
+  <footer>© 2025 Sumit Sinha | Hosted on GitHub Pages</footer>
 
   <script>
-    // Auto-play specific song if URL has a hash
+    // Handle direct links with autoplay prompt
     window.onload = function() {
-      const hash = window.location.hash.substring(1); // remove #
+      const hash = window.location.hash.substring(1);
       if (hash) {
-        const player = document.getElementById(hash);
-        if (player) {
-          player.play(); // auto-play that song
-          player.scrollIntoView({behavior: "smooth"}); // scroll to it
+        const block = document.getElementById(hash + "-block");
+        const playButton = document.getElementById(hash + "-play");
+        if (block && playButton) {
+          block.scrollIntoView({behavior: "smooth"});
+          playButton.style.display = "block"; // show big Play button
         }
       }
     };

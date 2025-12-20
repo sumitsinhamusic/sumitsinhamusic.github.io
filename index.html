@@ -1,377 +1,146 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Sumit Sinha Music</title>
-  <style>
-    body { margin:0; font-family:'Segoe UI', Arial, sans-serif; background:#f4f4f4; }
+<script>
+  // Library data
+  const songs = [
+    { title: "Adhuri Kahani", file: "Adhuri Kahani.mp3" },
+    { title: "Junoon Hai Mere Khoon Mein", file: "Junoon Hai Mere Khoon Mein-Remix.wav" },
+    { title: "Naam Tera Saanson Mein Hai", file: "Naam Tera Saanson Mein Hai.mp3" },
+    { title: "Raaz Hai Tu Mere Wajood Mein", file: "Raaz Hai Tu Mere Wajood Mein.mp3" },
+    // ... add more songs
+  ];
 
-    /* Header: menu left, logo right */
-    header {
-      background:#000;
-      padding:10px 30px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
-    header img { max-width:120px; border-radius:10px; }
-    nav a { color:#1db954; margin:0 15px; text-decoration:none; font-weight:bold; }
-    nav a:hover { color:#fff; }
+  // Elements
+  const globalPlayer = document.getElementById("globalPlayer");
+  const nowTitle = document.getElementById("nowTitle");
+  const pauseResumeBtn = document.getElementById("pauseResumeBtn");
+  const playAllBtn = document.getElementById("playAllBtn");
+  const popup = document.getElementById("popup");
+  const allSongsList = document.getElementById("allSongs");
+  const closePopupBtn = document.getElementById("closePopupBtn");
 
-    /* Hero Banner */
-    .hero {
-      background:linear-gradient(135deg,#1db954,#191414);
-      color:#fff;
-      text-align:center;
-      padding:60px 20px;
-    }
-    .hero h1 { font-size:36px; margin:0; }
-    .hero p { font-size:18px; margin-top:10px; }
-    .hero button {
-      margin-top:20px; padding:12px 25px; font-size:16px;
-      background:#fff; color:#1db954; border:none; border-radius:5px; cursor:pointer;
-    }
-    .hero button:hover { background:#1ed760; color:#fff; }
+  // ----- PLAY SONG FUNCTION -----
+  function loadAndPlay(file, title) {
+    if (!file) return;
 
-    /* Section */
-    .section { max-width:1000px; margin:40px auto; padding:20px; }
-    .section h2 { margin-bottom:20px; }
+    // Update only ?song= without touching hash
+    const url = new URL(window.location);
+    url.searchParams.set("song", file);
+    window.history.replaceState({}, "", url);
 
-    /* Song Grid */
-    .songs-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:20px; }
-    .song-card {
-      background:#fff; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);
-      padding:15px; text-align:center; transition:transform 0.2s;
-    }
-    .song-card:hover { transform:scale(1.03); }
-    .song-card img { width:100%; height:140px; object-fit:cover; border-radius:5px; }
-    .song-card h3 { margin:10px 0; font-size:16px; }
-    .song-card button {
-      background:#1db954; color:#fff; border:none; border-radius:5px; cursor:pointer;
-      padding:8px 12px; font-weight:bold;
-    }
-    .song-card button:hover { background:#1ed760; }
-
-    /* News Cards */
-    .news-card { background:#fff; margin:20px 0; padding:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
-
-    /* Footer */
-    footer { background:#000; color:#aaa; text-align:center; padding:20px; margin-top:40px; }
-    footer a { color:#1db954; text-decoration:none; margin:0 10px; }
-    footer a:hover { color:#fff; }
-
-    /* Popup */
-    .popup {
-      position:fixed; inset:0; display:none;
-      justify-content:center; align-items:center;
-      background:rgba(0,0,0,0.7); z-index:1000;
-    }
-    .popup.show { display:flex; }
-    .popup-content {
-      background:#fff; padding:20px; border-radius:10px;
-      max-height:80%; overflow-y:auto; width:420px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.3);
-    }
-    .popup-content h3 { margin-top:0; }
-    .popup-content ul { list-style:none; padding:0; margin:0; }
-    .popup-content li { margin:10px 0; cursor:pointer; color:#1db954; font-weight:bold; }
-    .popup-content li:hover { color:#000; }
-    body.popup-open { overflow:hidden; }
-
-    /* Now Playing Bar (single shared audio) */
-    /* FLOATING DRAGGABLE MINI PLAYER */
-.now-playing{
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  width:330px;
-  background:#111;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:10px 14px;
-  border-radius:14px;
-  box-shadow:0 10px 30px rgba(0,0,0,.4);
-  z-index:999;
-  cursor:move;
-  user-select:none;
-}
-
-.now-playing audio{
-  width:150px;
-}
-
-    .now-playing .title { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .now-playing button {
-      background:#1db954; color:#fff; border:none; border-radius:5px; cursor:pointer;
-      padding:6px 10px; font-weight:bold;
-    }
-    .now-playing button:hover { background:#1ed760; }
-    .now-playing audio { width:320px; max-width:50vw; }
-  </style>
-</head>
-<body>
-  <!-- Header -->
-  <header>
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#library">Songs Library</a>
-      <a href="#news">News</a>
-      <a href="#movies">Movies/Web Series</a>
-      <a href="#about">About</a>
-    </nav>
-    <img src="Sumit Sinha Music.png" alt="Logo" />
-  </header>
-
-  <!-- Hero -->
-  <div class="hero" id="home">
-    <h1>🎵 Welcome to Sumit Sinha Music 🎵</h1>
-    <p>Bollywood-inspired Romantic & Devotional Songs</p>
-    <button id="playAllBtn">▶ Play All Songs</button>
-  </div>
-
-  <!-- Featured Songs -->
-  <div class="section" id="library">
-    <h2>🔥 Trending Songs</h2>
-    <div class="songs-grid" id="songsGrid">
-      <!-- Cards use buttons (no native audio controls) to drive the shared player -->
-      <div class="song-card" data-file="Adhuri Kahani.mp3" data-title="Adhuri Kahani">
-        <img src="Adhuri Kahani.png" alt="Album Art" />
-        <h3>Adhuri Kahani</h3>
-        <button class="play-btn">▶ </button>
-      </div>
-      <div class="song-card" data-file="Junoon Hai Mere Khoon Mein-Remix.wav" data-title="Junoon Hai Mere Khoon Mein">
-        <img src="Junoon Hai Mere Khoon Mein.jpg" alt="Album Art" />
-        <h3>Junoon Hai Mere Khoon Mein</h3>
-        <button class="play-btn">▶ </button>
-      </div>
-      <div class="song-card" data-file="Naam Tera Saanson Mein Hai.mp3" data-title="Naam Tera Saanson Mein Hai">
-        <img src="Naam Tera Saanson Mein Hai.png" alt="Album Art" />
-        <h3>Naam Tera Saanson Mein Hai</h3>
-        <button class="play-btn">▶ </button>
-      </div>
-      <div class="song-card" data-file="Raaz Hai Tu Mere Wajood Mein.mp3" data-title="Raaz Hai Tu Mere Wajood Mein">
-        <img src="Raaz Hai Tu Mere Wajood Mein-Thumbnail.jpg" alt="Album Art" />
-        <h3>Raaz Hai Tu Mere Wajood Mein</h3>
-        <button class="play-btn">▶ </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- News -->
-  <div class="section" id="news">
-    <h2>📰 Latest News & Updates</h2>
-    <div class="news-card">
-      <h3>Upcoming Song Release: "Sher Dil"</h3>
-      <p>Releasing Jan 2026 — a soulful romantic track blending modern beats with classical vibes.</p>
-    </div>
-    <div class="news-card" id="movies">
-      <h3>Web Series Collaboration</h3>
-      <p>Sumit Sinha Music will feature in an upcoming Netflix web-series with own soundtrack.</p>
-    </div>
-    <div class="news-card">
-      <h3>Movie Soundtrack Announcement</h3>
-      <p>New sound track to be part of a Bollywood movie releasing soon.</p>
-    </div>
-    <div class="section" id="about">
-  <h3>ℹ️ About Sumit Sinha Music</h3>
-  <p>
-    Sumit Sinha Music is dedicated to creating soulful Bollywood-inspired romantic and devotional tracks.  
-    This platform showcases original compositions, collaborations with films and web series, and updates on upcoming releases.  
-    The goal is to merge traditional melodies with modern beats, bringing heartfelt music to listeners worldwide.
-  </p>
-  <p>
-    Based in Bihar, India, Sumit draws inspiration from local traditions and cultural heritage, blending them into contemporary soundscapes.  
-    Explore the library, follow the latest news, and enjoy the journey of music and storytelling.
-  </p>
-</div>
-  </div>
-
-  <!-- Footer -->
-  <footer>
-    © 2025 Sumit Sinha | Follow on 
-    <a href="https://www.youtube.com/@SumitSinha5" target="_blank">YouTube</a> •
-    <a href="https://www.facebook.com/s.k.185" target="_blank">Facebook</a>
-  </footer>
-
-  <!-- Popup -->
-  <div class="popup" id="popup">
-    <div class="popup-content" role="dialog" aria-modal="true" aria-label="Select a Song">
-      <h3>Select a Song</h3>
-      <ul id="allSongs"></ul>
-      <button id="closePopupBtn">Close</button>
-    </div>
-  </div>
-
-  <!-- Now Playing (single shared audio) -->
-  <div class="now-playing" id="nowPlayingBar">
-    <span class="title" id="nowTitle">No song playing</span>
-    <button id="pauseResumeBtn" disabled>Pause</button>
-    <audio id="globalPlayer" controls></audio>
-  </div>
-
-  <script>
-    // Library data
-    const songs = [
-      { title: "Adhuri Kahani", file: "Adhuri Kahani.mp3" },
-      { title: "Junoon Hai Mere Khoon Mein", file: "Junoon Hai Mere Khoon Mein-Remix.wav" },
-      { title: "Naam Tera Saanson Mein Hai", file: "Naam Tera Saanson Mein Hai.mp3" },
-      { title: "Raaz Hai Tu Mere Wajood Mein", file: "Raaz Hai Tu Mere Wajood Mein.mp3" },
-      // ... add up to 1000+ songs
-    ];
-
-    // Elements
-    const globalPlayer = document.getElementById("globalPlayer");
-    const nowTitle = document.getElementById("nowTitle");
-    const pauseResumeBtn = document.getElementById("pauseResumeBtn");
-    const playAllBtn = document.getElementById("playAllBtn");
-    const popup = document.getElementById("popup");
-    const allSongsList = document.getElementById("allSongs");
-    const closePopupBtn = document.getElementById("closePopupBtn");
-
-    // Utility: load and play in shared player
-    function loadAndPlay(file, title) {
-      // If same song and currently playing → stop
-      if (globalPlayer.src && globalPlayer.src.includes(file) && !globalPlayer.paused) {
-        globalPlayer.pause();
-        globalPlayer.currentTime = 0;
-        nowTitle.textContent = "No song playing";
-        pauseResumeBtn.disabled = true;
-        return;
-      }
-
-      // Load new source and play
-      globalPlayer.src = file;
-      globalPlayer.play().catch(() => {
-        // Autoplay might be blocked; user can press play manually
-      });
-      nowTitle.textContent = title || file;
-      pauseResumeBtn.disabled = false;
-      pauseResumeBtn.textContent = "Pause";
-    }
-
-    // Pause/Resume button
-    pauseResumeBtn.addEventListener("click", () => {
-      if (globalPlayer.paused) {
-        globalPlayer.play();
-        pauseResumeBtn.textContent = "Pause";
-      } else {
-        globalPlayer.pause();
-        pauseResumeBtn.textContent = "Resume";
-      }
-    });
-
-    // When playback ends
-    globalPlayer.addEventListener("ended", () => {
+    // Stop if same song playing
+    if (globalPlayer.src && globalPlayer.src.includes(file) && !globalPlayer.paused) {
+      globalPlayer.pause();
+      globalPlayer.currentTime = 0;
       nowTitle.textContent = "No song playing";
       pauseResumeBtn.disabled = true;
+      return;
+    }
+
+    globalPlayer.src = file;
+    globalPlayer.play().catch(() => {});
+    nowTitle.textContent = title || file;
+    pauseResumeBtn.disabled = false;
+    pauseResumeBtn.textContent = "Pause";
+  }
+
+  // ----- LOAD SONG FROM URL ON PAGE LOAD -----
+  window.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const songFile = params.get("song");
+    if (songFile) {
+      const song = songs.find(s => s.file === songFile);
+      if (song) loadAndPlay(song.file, song.title);
+    }
+  });
+
+  // ----- BIND SONG CARD BUTTONS -----
+  document.querySelectorAll(".song-card .play-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const card = btn.closest(".song-card");
+      loadAndPlay(card.dataset.file, card.dataset.title);
+    });
+  });
+
+  // ----- PAUSE / RESUME -----
+  pauseResumeBtn.addEventListener("click", () => {
+    if (globalPlayer.paused) {
+      globalPlayer.play();
       pauseResumeBtn.textContent = "Pause";
-    });
-
-    // Bind play buttons on cards
-    document.querySelectorAll(".song-card .play-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const card = btn.closest(".song-card");
-        const file = card.dataset.file;
-        const title = card.dataset.title;
-        loadAndPlay(file, title);
-      });
-    });
-
-    // Popup logic
-    function openPopup() {
-      // Populate list
-      allSongsList.innerHTML = "";
-      songs.forEach(song => {
-        const li = document.createElement("li");
-        li.textContent = song.title;
-        li.onclick = () => { loadAndPlay(song.file, song.title); closePopup(); };
-        allSongsList.appendChild(li);
-      });
-
-      popup.classList.add("show");
-      document.body.classList.add("popup-open");
+    } else {
+      globalPlayer.pause();
+      pauseResumeBtn.textContent = "Resume";
     }
-    function closePopup() {
-      popup.classList.remove("show");
-      document.body.classList.remove("popup-open");
-    }
-    playAllBtn.addEventListener("click", openPopup);
-    closePopupBtn.addEventListener("click", closePopup);
+  });
 
-    // Close when clicking outside content
-    popup.addEventListener("click", (e) => {
-      if (e.target === popup) closePopup();
+  // ----- PLAYBACK ENDED -----
+  globalPlayer.addEventListener("ended", () => {
+    nowTitle.textContent = "No song playing";
+    pauseResumeBtn.disabled = true;
+    pauseResumeBtn.textContent = "Pause";
+  });
+
+  // ----- POPUP LOGIC -----
+  function openPopup() {
+    allSongsList.innerHTML = "";
+    songs.forEach(song => {
+      const li = document.createElement("li");
+      li.textContent = song.title;
+      li.onclick = () => { loadAndPlay(song.file, song.title); closePopup(); };
+      allSongsList.appendChild(li);
     });
-    // Escape key closes
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && popup.classList.contains("show")) closePopup();
+    popup.classList.add("show");
+    document.body.classList.add("popup-open");
+  }
+  function closePopup() {
+    popup.classList.remove("show");
+    document.body.classList.remove("popup-open");
+  }
+  playAllBtn.addEventListener("click", openPopup);
+  closePopupBtn.addEventListener("click", closePopup);
+  popup.addEventListener("click", e => { if(e.target === popup) closePopup(); });
+  document.addEventListener("keydown", e => { if(e.key === "Escape" && popup.classList.contains("show")) closePopup(); });
+
+  // ----- MENU LINKS UPDATE HASH ONLY -----
+  document.querySelectorAll("header nav a").forEach(link => {
+    link.addEventListener("click", e => {
+      const hash = link.getAttribute("href"); // #about, #news etc.
+      const url = new URL(window.location);
+      url.hash = hash; // update only hash
+      window.history.replaceState({}, "", url);
+      // default scrolling behavior still works
     });
-    /* ===== MINI PLAYER DRAG LOGIC ===== */
-const mini = document.getElementById("nowPlayingBar");
+  });
 
-let isDragging = false;
-let startX, startY, startLeft, startTop;
+  /* ===== MINI PLAYER DRAG LOGIC ===== */
+  const mini = document.getElementById("nowPlayingBar");
+  let isDragging = false, startX, startY, startLeft, startTop;
 
-// --- MOUSE & TOUCH START ---
-function dragStart(e) {
-  const targetTag = e.target.tagName;
-  if (targetTag === "AUDIO" || targetTag === "BUTTON") return;
-
-  isDragging = true;
-  const rect = mini.getBoundingClientRect();
-
-  startLeft = rect.left;
-  startTop = rect.top;
-
-  mini.style.right = "auto";
-  mini.style.bottom = "auto";
-
-  if (e.type === "touchstart") {
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-  } else {
-    startX = e.clientX;
-    startY = e.clientY;
+  function dragStart(e) {
+    const targetTag = e.target.tagName;
+    if(targetTag==="AUDIO"||targetTag==="BUTTON") return;
+    isDragging = true;
+    const rect = mini.getBoundingClientRect();
+    startLeft = rect.left;
+    startTop = rect.top;
+    mini.style.right="auto";
+    mini.style.bottom="auto";
+    startX = e.type==="touchstart"?e.touches[0].clientX:e.clientX;
+    startY = e.type==="touchstart"?e.touches[0].clientY:e.clientY;
+    e.preventDefault();
   }
-
-  e.preventDefault();
-}
-
-mini.addEventListener("mousedown", dragStart);
-mini.addEventListener("touchstart", dragStart, { passive: false });
-
-// --- MOUSE & TOUCH MOVE ---
-function dragMove(e) {
-  if (!isDragging) return;
-
-  let clientX, clientY;
-  if (e.type === "touchmove") {
-    clientX = e.touches[0].clientX;
-    clientY = e.touches[0].clientY;
-  } else {
-    clientX = e.clientX;
-    clientY = e.clientY;
+  function dragMove(e) {
+    if(!isDragging) return;
+    const clientX = e.type==="touchmove"?e.touches[0].clientX:e.clientX;
+    const clientY = e.type==="touchmove"?e.touches[0].clientY:e.clientY;
+    mini.style.left = startLeft + (clientX - startX) + "px";
+    mini.style.top = startTop + (clientY - startY) + "px";
+    e.preventDefault();
   }
+  function dragEnd(){ isDragging=false; }
 
-  mini.style.left = startLeft + (clientX - startX) + "px";
-  mini.style.top  = startTop  + (clientY - startY) + "px";
-
-  e.preventDefault();
-}
-
-document.addEventListener("mousemove", dragMove);
-document.addEventListener("touchmove", dragMove, { passive: false });
-
-// --- MOUSE & TOUCH END ---
-function dragEnd() {
-  isDragging = false;
-}
-
-document.addEventListener("mouseup", dragEnd);
-document.addEventListener("touchend", dragEnd);
-
-  </script>
-</body>
-</html>
+  mini.addEventListener("mousedown", dragStart);
+  mini.addEventListener("touchstart", dragStart, {passive:false});
+  document.addEventListener("mousemove", dragMove);
+  document.addEventListener("touchmove", dragMove, {passive:false});
+  document.addEventListener("mouseup", dragEnd);
+  document.addEventListener("touchend", dragEnd);
+</script>

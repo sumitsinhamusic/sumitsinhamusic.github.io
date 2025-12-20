@@ -7,11 +7,16 @@
     body { margin:0; font-family:'Segoe UI',Arial,sans-serif; background:#f4f4f4; }
 
     /* Header */
-    header { background:#000; padding:20px; display:flex; justify-content:flex-end; }
+    header {
+      background:#000;
+      padding:10px 30px;
+      display:flex;
+      justify-content:space-between; /* menu left, logo right */
+      align-items:center;
+    }
     header img { max-width:120px; border-radius:10px; }
 
     /* Navigation */
-    nav { background:#111; padding:10px; display:flex; justify-content:flex-start; }
     nav a { color:#1db954; margin:0 15px; text-decoration:none; font-weight:bold; }
     nav a:hover { color:#fff; }
 
@@ -63,19 +68,17 @@
   </style>
 </head>
 <body>
-  <!-- Header with Logo -->
+  <!-- Header with Menu left, Logo right -->
   <header>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#library">Songs Library</a>
+      <a href="#news">News</a>
+      <a href="#movies">Movies/Web Series</a>
+      <a href="#about">About</a>
+    </nav>
     <img src="Sumit Sinha Music.png" alt="Logo">
   </header>
-
-  <!-- Navigation -->
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#library">Songs Library</a>
-    <a href="#news">News</a>
-    <a href="#movies">Movies/Web Series</a>
-    <a href="#about">About</a>
-  </nav>
 
   <!-- Hero Banner -->
   <div class="hero" id="home">
@@ -103,7 +106,6 @@
         <h3>Naam Tera Saanson Mein Hai</h3>
         <audio controls><source src="Naam Tera Saanson Mein Hai.mp3" type="audio/mpeg"></audio>
       </div>
-      <!-- More cards for latest 10 songs -->
     </div>
   </div>
 
@@ -188,10 +190,4 @@
       // If same song is already playing → stop it
       if (currentAudio && currentAudio.src.includes(file) && !currentAudio.paused) {
         currentAudio.pause();
-        currentAudio.currentTime = 0;
-        currentAudio = null;
-        return;
-      }
-
-      // Otherwise stop all and play new one
-      stopAllAud
+        currentAudio.currentTime = 0

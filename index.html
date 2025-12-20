@@ -232,35 +232,41 @@
 
     // Utility: load and play in shared player
     function loadAndPlay(file, title) {
-      // If same song and currently playing → stop
-      if (globalPlayer.src && globalPlayer.src.includes(file) && !globalPlayer.paused) {
-        globalPlayer.pause();
-        globalPlayer.currentTime = 0;
-        nowTitle.textContent = "No song playing";
-        pauseResumeBtn.disabled = true;
-        return;
-      }
+  if (!file) return;
 
-      // Load new source and play
-      globalPlayer.src = file;
-      globalPlayer.play().catch(() => {
-        // Autoplay might be blocked; user can press play manually
-      });
-      nowTitle.textContent = title || file;
-      pauseResumeBtn.disabled = false;
-      pauseResumeBtn.textContent = "Pause";
-    }
+  // Update browser URL automatically with the current song
+  const url = new URL(window.location);
+  url.searchParams.set("song", file);  // sets ?song=filename
+  window.history.replaceState({}, "", url);
+
+  // Stop if same song and playing
+  if (globalPlayer.src && globalPlayer.src.includes(file) && !globalPlayer.paused) {
+    globalPlayer.pause();
+    globalPlayer.currentTime = 0;
+    nowTitle.textContent = "No song playing";
+    pauseResumeBtn.disabled = true;
+    return;
+  }
+
+  // Load new source and play
+  globalPlayer.src = file;
+  globalPlayer.play().catch(() => {});
+  nowTitle.textContent = title || file;
+  pauseResumeBtn.disabled = false;
+  pauseResumeBtn.textContent = "Pause";
+}
 
     // Pause/Resume button
-    pauseResumeBtn.addEventListener("click", () => {
-      if (globalPlayer.paused) {
-        globalPlayer.play();
-        pauseResumeBtn.textContent = "Pause";
-      } else {
-        globalPlayer.pause();
-        pauseResumeBtn.textContent = "Resume";
-      }
-    });
+    window.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const songFile = params.get("song");
+  if (songFile) {
+    const song = songs.find(s => s.file === songFile);
+    if (song) {
+      loadAndPlay(song.file, song.title);
+    }
+  }
+});
 
     // When playback ends
     globalPlayer.addEventListener("ended", () => {

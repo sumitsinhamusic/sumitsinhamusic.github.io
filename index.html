@@ -1,85 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Sumit Sinha Music</title>
-  <style>
-    body { margin:0; font-family:'Segoe UI', Arial, sans-serif; background:#f4f4f4; }
+<meta charset="UTF-8">
+<title>Sumit Sinha Music</title>
 
-    /* Header: menu left, logo right */
-    header {
-      background:#000;
-      padding:10px 30px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
-    header img { max-width:120px; border-radius:10px; }
-    nav a { color:#1db954; margin:0 15px; text-decoration:none; font-weight:bold; }
-    nav a:hover { color:#fff; }
+<style>
+/* ========== BASE ========== */
+body{
+  margin:0;
+  font-family:'Segoe UI', Arial, sans-serif;
+  background:#f4f4f4;
+}
 
-    /* Hero Banner */
-    .hero {
-      background:linear-gradient(135deg,#1db954,#191414);
-      color:#fff;
-      text-align:center;
-      padding:5px 0px;
-    }
-    .hero h1 { font-size:36px; margin:0; }
-    .hero p { font-size:18px; margin-top:10px; }
-    .hero button {
-      margin-top:20px; padding:12px 25px; font-size:16px;
-      background:#fff; color:#1db954; border:none; border-radius:5px; cursor:pointer;
-    }
-    .hero button:hover { background:#1ed760; color:#fff; }
+/* ========== HEADER ========== */
+header{
+  background:#121212;
+  padding:10px 30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+header img{
+  max-width:120px;
+  border-radius:10px;
+}
+nav a{
+  color:#1db954;
+  margin:0 15px;
+  text-decoration:none;
+  font-weight:bold;
+}
+nav a:hover{color:#fff}
 
-    /* Section */
-    .section { max-width:1000px; margin:0px auto; padding:0px; }
-    .section h2 { margin-bottom:20px; }
+/* ========== HERO ========== */
+.hero{
+  background:linear-gradient(135deg,#1db954,#191414);
+  color:#fff;
+  text-align:center;
+  padding:10px 0;
+}
+.hero h1{margin:0;font-size:36px}
+.hero p{margin:6px 0}
+.hero button{
+  margin-top:10px;
+  padding:12px 25px;
+  font-size:16px;
+  background:#fff;
+  color:#1db954;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+.hero button:hover{background:#1ed760;color:#fff}
 
-    /* Song Grid */
-    .songs-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:20px; }
-    .song-card {
-      background:#fff; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);
-      padding:15px; text-align:center; transition:transform 0.2s;
-    }
-    .song-card:hover { transform:scale(1.03); }
-    .song-card img { width:100%; height:280px; object-fit:cover; border-radius:5px; }
-    .song-card h3 { margin:10px 0; font-size:16px; }
-    .song-card button {
-      background:#1db954; color:#fff; border:none; border-radius:5px; cursor:pointer;
-      padding:8px 12px; font-weight:bold;
-    }
-    .song-card button:hover { background:#1ed760; }
+/* ========== SECTION ========== */
+.section{
+  max-width:1000px;
+  margin:auto;
+  padding:10px;
+}
+.section h2{margin-bottom:15px}
 
-    /* News Cards */
-    .news-card { background:#fff; margin:20px 0; padding:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+/* ========== SONG GRID ========== */
+.songs-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:20px;
+}
+.song-card{
+  background:#fff;
+  border-radius:8px;
+  box-shadow:0 2px 5px rgba(0,0,0,.1);
+  padding:12px;
+  transition:.2s;
+}
+.song-card:hover{transform:scale(1.03)}
+.song-card img{
+  width:100%;
+  height:280px;
+  object-fit:cover;
+  border-radius:6px;
+  cursor:pointer;
+}
 
-    /* Footer */
-    footer { background:#000; color:#aaa; text-align:center; padding:20px; margin-top:40px; }
-    footer a { color:#1db954; text-decoration:none; margin:0 10px; }
-    footer a:hover { color:#fff; }
+/* ========== NEWS ========== */
+.news-card{
+  background:#fff;
+  margin:20px 0;
+  padding:20px;
+  border-radius:8px;
+  box-shadow:0 2px 5px rgba(0,0,0,.1);
+}
 
-    /* Popup */
-    .popup {
-      position:fixed; inset:0; display:none;
-      justify-content:center; align-items:center;
-      background:rgba(0,0,0,0.7); z-index:1000;
-    }
-    .popup.show { display:flex; }
-    .popup-content {
-      background:#fff; padding:20px; border-radius:10px;
-      max-height:80%; overflow-y:auto; width:420px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.3);
-    }
-    .popup-content h3 { margin-top:0; }
-    .popup-content ul { list-style:none; padding:0; margin:0; }
-    .popup-content li { margin:10px 0; cursor:pointer; color:#1db954; font-weight:bold; }
-    .popup-content li:hover { color:#000; }
-    body.popup-open { overflow:hidden; }
+/* ========== FOOTER ========== */
+footer{
+  background:#121212;
+  color:#aaa;
+  text-align:center;
+  padding:20px;
+}
+footer a{
+  color:#1db954;
+  text-decoration:none;
+}
+footer a:hover{color:#fff}
 
-    /* Now Playing Bar (single shared audio) */
-    /* FLOATING DRAGGABLE MINI PLAYER */
+/* ========== POPUP ========== */
+.popup{
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  background:rgba(0,0,0,.7);
+  z-index:1000;
+}
+.popup.show{display:flex}
+.popup-content{
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  width:420px;
+  max-height:80%;
+  overflow:auto;
+}
+.popup-content ul{list-style:none;padding:0;margin:0}
+.popup-content li{
+  margin:10px 0;
+  cursor:pointer;
+  color:#1db954;
+  font-weight:bold;
+}
+.popup-content li:hover{color:#000}
+body.popup-open{overflow:hidden}
+
+/* ========== MINI PLAYER ========== */
 .now-playing{
   position:fixed;
   right:20px;
@@ -89,34 +144,34 @@
   color:#fff;
   display:flex;
   align-items:center;
-  gap:12px;
-  padding:10px 14px;
+  gap:10px;
+  padding:10px;
   border-radius:14px;
   box-shadow:0 10px 30px rgba(0,0,0,.4);
   z-index:999;
-  cursor:move;
-  user-select:none;
-  flex:1;
+}
+.now-playing .title{
+  max-width:300px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.now-playing button{
+  background:#1db954;
+  border:none;
+  border-radius:5px;
+  padding:6px 10px;
   cursor:pointer;
 }
-    .now-playing .title {
-  max-width: 320px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-}
-    .now-playing button {
-      background:#1db954; color:#fff; border:none; border-radius:5px; cursor:pointer;
-      padding:6px 10px; font-weight:bold;
-    }
-    .now-playing button:hover { background:#1ed760; }
-    .now-playing audio { display: none; }
-  </style>
+.now-playing button:hover{background:#1ed760}
+.now-playing audio{display:none}
+</style>
 </head>
+
 <body>
-  <!-- Header -->
-  <header>
+
+<!-- ===== HEADER ===== -->
+<header>
     <nav>
       <a href="#home">Home</a>
       <a href="#library">Songs Library</a>
@@ -127,52 +182,53 @@
     <img src="Sumit Sinha Music.png" alt="Logo" />
   </header>
 
-  <!-- Hero -->
-  <div class="hero" id="home">
-    <h1>🎵 Welcome to Sumit Sinha Music 🎵</h1>
-    <p>Bollywood-inspired Romantic & Devotional Songs</p>
-    <button id="playAllBtn">▶ Play All Songs</button>
-  </div>
+<!-- ===== HERO ===== -->
+<div class="hero" id="home">
+  <h1>🎵 Sumit Sinha Music 🎵</h1>
+  <p>Romantic • Devotional • Bollywood Inspired</p>
+  <button id="playAllBtn">▶ Play All Songs</button>
+</div>
 
-  <!-- Featured Songs -->
+<!-- ===== SONGS ===== -->
 <div class="section" id="library">
   <h2>🔥 Trending Songs</h2>
-  <div class="songs-grid" id="songsGrid">
-    <div class="song-card" data-file="Adhuri Kahani.mp3" data-title="Adhuri Kahani">
-  <img src="Adhuri Kahani.png" alt="Adhuri Kahani" class="album-art" />
-</div>
 
-<div class="song-card" data-file="Junoon Hai Mere Khoon Mein-Remix.wav" data-title="Junoon Hai Mere Khoon Mein">
-  <img src="Junoon Hai Mere Khoon Mein.jpg" alt="Junoon Hai Mere Khoon Mein" class="album-art" />
-</div>
+  <div class="songs-grid">
+    <div class="song-card" data-title="Adhuri Kahani" data-file="Adhuri Kahani.mp3">
+      <img src="Adhuri Kahani.png" class="album-art">
+    </div>
 
-<div class="song-card" data-file="Naam Tera Saanson Mein Hai.mp3" data-title="Naam Tera Saanson Mein Hai">
-  <img src="Naam Tera Saanson Mein Hai.png" alt="Naam Tera Saanson Mein Hai" class="album-art" />
-</div>
+    <div class="song-card" data-title="Junoon Hai Mere Khoon Mein" data-file="Junoon Hai Mere Khoon Mein-Remix.wav">
+      <img src="Junoon Hai Mere Khoon Mein.jpg" class="album-art">
+    </div>
 
-<div class="song-card" data-file="Raaz Hai Tu Mere Wajood Mein.mp3" data-title="Raaz Hai Tu Mere Wajood Mein">
-  <img src="Raaz Hai Tu Mere Wajood Mein-Thumbnail.jpg" alt="Raaz Hai Tu Mere Wajood Mein" class="album-art" />
-</div>
+    <div class="song-card" data-title="Naam Tera Saanson Mein Hai" data-file="Naam Tera Saanson Mein Hai.mp3">
+      <img src="Naam Tera Saanson Mein Hai.png" class="album-art">
+    </div>
 
-<div class="song-card" data-file="Khaali Aasmaan.mp3" data-title="Khaali Aasmaan">
-  <img src="Khaali Aasmaan.png" alt="Khaali Aasmaan" class="album-art" />
-</div>
+    <div class="song-card" data-title="Raaz Hai Tu Mere Wajood Mein" data-file="Raaz Hai Tu Mere Wajood Mein.mp3">
+      <img src="Raaz Hai Tu Mere Wajood Mein-Thumbnail.jpg" class="album-art">
+    </div>
 
-<div class="song-card" data-file="Mera Sach Yahin.mp3" data-title="Mera Sach Yahin Rakh">
-  <img src="Mera Sach Yahin Rakh.png" alt="Mera Sach Yahin Rakh" class="album-art" />
-</div>
+    <div class="song-card" data-title="Khaali Aasmaan" data-file="Khaali Aasmaan.mp3">
+      <img src="Khaali Aasmaan.png" class="album-art">
+    </div>
 
-<div class="song-card" data-file="SHER DIL-V1.mp3" data-title="Sher Dil">
-  <img src="Sher Dil.png" alt="Sher Dil" class="album-art" />
-</div>
+    <div class="song-card" data-title="Mera Sach Yahin" data-file="Mera Sach Yahin.mp3">
+      <img src="Mera Sach Yahin Rakh.png" class="album-art">
+    </div>
+
+    <div class="song-card" data-title="Sher Dil" data-file="SHER DIL-V1.mp3">
+      <img src="Sher Dil.png" class="album-art">
+    </div>
   </div>
 </div>
 
-  <!-- News -->
-  <div class="section" id="news">
+<!-- ===== NEWS ===== -->
+<div class="section" id="news">
     <h2>📰 Latest News & Updates</h2>
     <div class="news-card">
-      <h3>Upcoming Song Release: Sumit Sinha Music"</h3>
+      <h3>Upcoming Song Release: Sumit Sinha Music</h3>
       <p>Releasing Jan 2026 — a soulful romantic track blending modern beats with classical vibes.</p>
     </div>
     <div class="news-card" id="movies">
@@ -183,7 +239,8 @@
       <h3>Movie Soundtrack Announcement</h3>
       <p>New sound track to be part of a Bollywood movie releasing soon.</p>
     </div>
-    <div class="section" id="about">
+<!-- ===== ABOUT ===== -->
+<div class="section" id="about">
   <h3>ℹ️ About Sumit Sinha Music</h3>
   <p>
     Sumit Sinha Music is dedicated to creating soulful Bollywood-inspired romantic and devotional tracks.  
@@ -195,35 +252,33 @@
     Explore the library, follow the latest news, and enjoy the journey of music and storytelling.
   </p>
 </div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  © 2025 Sumit Sinha |
+  <a href="https://www.youtube.com/@SumitSinha5" target="_blank">YouTube</a> •
+  <a href="https://www.facebook.com/s.k.185" target="_blank">Facebook</a>
+</footer>
+
+<!-- ===== POPUP ===== -->
+<div class="popup" id="popup">
+  <div class="popup-content">
+    <h3>Select a Song</h3>
+    <ul id="allSongs"></ul>
+    <button onclick="closePopup()">Close</button>
   </div>
+</div>
 
-  <!-- Footer -->
-  <footer>
-    © 2025 Sumit Sinha | Follow on 
-    <a href="https://www.youtube.com/@SumitSinha5" target="_blank">YouTube</a> •
-    <a href="https://www.facebook.com/s.k.185" target="_blank">Facebook</a>
-  </footer>
-
-  <!-- Popup -->
-  <div class="popup" id="popup">
-    <div class="popup-content" role="dialog" aria-modal="true" aria-label="Select a Song">
-      <h3>Select a Song</h3>
-      <ul id="allSongs"></ul>
-      <button id="closePopupBtn">Close</button>
-    </div>
-  </div>
-
-  <!-- Now Playing (single shared audio) -->
-  <div class="now-playing" id="nowPlayingBar">
+<!-- ===== MINI PLAYER ===== -->
+<div class="now-playing" id="nowPlayingBar">
   <button id="prevBtn">⏮</button>
-
   <button id="pauseResumeBtn" disabled>▶</button>
-
   <button id="nextBtn">⏭</button>
 
-  <div style="flex:1;">
+  <div style="flex:1">
     <div class="title" id="nowTitle">No song playing</div>
-    <div style="display:flex; align-items:center; gap:6px;">
+
+    <div style="display:flex;align-items:center;gap:6px;">
       <span id="currentTime">0:00</span>
       <input type="range" id="seekBar" value="0" min="0" max="100">
       <span id="duration">0:00</span>
@@ -233,9 +288,9 @@
   <audio id="globalPlayer"></audio>
 </div>
 
-  <script>
-    // Library data
-    const songs = [
+<script>
+/* ===== SONG DATA ===== */
+const songs = [
       { title: "Veer Hanuman Chalisa", file: "Veer Hanuman Chalisa.mp3" },
       { title: "Adhuri Kahani", file: "Adhuri Kahani.mp3" },
       { title: "Junoon Hai Mere Khoon Mein", file: "Junoon Hai Mere Khoon Mein-Remix.wav" },
@@ -290,285 +345,141 @@
   { title: "Dil Ke Telephone", file: "Dil Ke Telephone.mp3" },
       // ... add up to 1000+ songs
     ];
-    const sortedSongs = [...songs].sort((a, b) =>
-  a.title.localeCompare(b.title)
-);
 
-let currentSongIndex = -1;
-    // Elements
-    const globalPlayer = document.getElementById("globalPlayer");
-    const nowTitle = document.getElementById("nowTitle");
-    const pauseResumeBtn = document.getElementById("pauseResumeBtn");
-    const playAllBtn = document.getElementById("playAllBtn");
-    const popup = document.getElementById("popup");
-    const allSongsList = document.getElementById("allSongs");
-    const closePopupBtn = document.getElementById("closePopupBtn");
+const sorted=[...songs].sort((a,b)=>a.title.localeCompare(b.title));
+let index=-1;
 
-    // Utility: load and play in shared player
-function updateUrlForSong(songTitle) {
-  const baseUrl = window.location.origin + window.location.pathname;
-  const newUrl = `${baseUrl}?song=${encodeURIComponent(songTitle)}`;
-  window.history.replaceState({}, "", newUrl);
-}
-
-function loadAndPlay(file, title) {
-  const index = sortedSongs.findIndex(s => s.file === file);
-currentSongIndex = index;
-
-  globalPlayer.src = file;
-  globalPlayer.play().catch(() => {});
-  nowTitle.textContent = title;
-  pauseResumeBtn.disabled = false;
-  pauseResumeBtn.textContent = "⏸";
-
-  updateUrlForSong(title);
-}
-
-    // Pause/Resume button
-    pauseResumeBtn.addEventListener("click", () => {
-      if (globalPlayer.paused) {
-        globalPlayer.play();
-        pauseResumeBtn.textContent = "⏸";
-      } else {
-        globalPlayer.pause();
-        pauseResumeBtn.textContent = "▶";      }
-    });
-const nextBtn = document.getElementById("nextBtn");
-const prevBtn = document.getElementById("prevBtn");
-
-nextBtn.addEventListener("click", playNext);
-prevBtn.addEventListener("click", playPrev);
-
-function playNext() {
-  if (sortedSongs.length === 0) return;
-  currentSongIndex = (currentSongIndex + 1) % sortedSongs.length;
-  const song = sortedSongs[currentSongIndex];
-  loadAndPlay(song.file, song.title);
-}
-
-function playPrev() {
-  if (sortedSongs.length === 0) return;
-  currentSongIndex =
-    (currentSongIndex - 1 + sortedSongs.length) % sortedSongs.length;
-  const song = sortedSongs[currentSongIndex];
-  loadAndPlay(song.file, song.title);
-}
-
-    // When playback ends
-    globalPlayer.addEventListener("ended", playNext);
-    const seekBar = document.getElementById("seekBar");
-const currentTimeEl = document.getElementById("currentTime");
-const durationEl = document.getElementById("duration");
-
-function formatTime(sec) {
-  if (isNaN(sec)) return "0:00";
-  const m = Math.floor(sec / 60);
-  const s = Math.floor(sec % 60).toString().padStart(2, "0");
-  return `${m}:${s}`;
-}
-
-globalPlayer.addEventListener("loadedmetadata", () => {
-  durationEl.textContent = formatTime(globalPlayer.duration);
-});
-
-globalPlayer.addEventListener("timeupdate", () => {
-  if (seeking) return;
-
-  currentTimeEl.textContent = formatTime(globalPlayer.currentTime);
-  seekBar.value =
-    (globalPlayer.currentTime / globalPlayer.duration) * 100 || 0;
-});
-
-["mousedown", "touchstart"].forEach(evt => {
-  seekBar.addEventListener(evt, e => e.stopPropagation());
-});
-let seeking = false;
-
-seekBar.addEventListener("pointerdown", () => {
-  seeking = true;
-});
-
-seekBar.addEventListener("pointermove", () => {
-  if (!seeking || !globalPlayer.duration) return;
-
-  const time =
-    (seekBar.value / 100) * globalPlayer.duration;
-
-  currentTimeEl.textContent = formatTime(time);
-});
-
-seekBar.addEventListener("pointerup", () => {
-  if (!globalPlayer.duration) return;
-
-  globalPlayer.currentTime =
-    (seekBar.value / 100) * globalPlayer.duration;
-
-  seeking = false;
-});
-
-    // Bind play buttons on cards
-    // Play song when album art clicked
-document.querySelectorAll(".song-card .album-art").forEach(img => {
-  img.addEventListener("click", () => {
-    const card = img.closest(".song-card");
-    loadAndPlay(card.dataset.file, card.dataset.title);
-  });
-});
-
-    // Popup logic
-    function openPopup() {
-      // Populate list
-      allSongsList.innerHTML = "";
-      songs.forEach(song => {
-        const li = document.createElement("li");
-        li.textContent = song.title;
-        li.onclick = () => { loadAndPlay(song.file, song.title); closePopup(); };
-        allSongsList.appendChild(li);
-        li.onclick = () => {
-  currentSongIndex = songs.findIndex(s => s.title === song.title);
-  loadAndPlay(song.file, song.title);
-  closePopup();
-};
-
-      });
-
-      popup.classList.add("show");
-      document.body.classList.add("popup-open");
-    }
-    function closePopup() {
-      popup.classList.remove("show");
-      document.body.classList.remove("popup-open");
-    }
-    playAllBtn.addEventListener("click", openPopup);
-    closePopupBtn.addEventListener("click", closePopup);
-
-    // Close when clicking outside content
-    popup.addEventListener("click", (e) => {
-      if (e.target === popup) closePopup();
-    });
-    // Escape key closes
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && popup.classList.contains("show")) closePopup();
-    });
-    /* ===== MINI PLAYER DRAG LOGIC ===== */
+const player=document.getElementById("globalPlayer");
+const titleEl=document.getElementById("nowTitle");
+const playBtn=document.getElementById("pauseResumeBtn");
+/* ===== DRAGGABLE MINI PLAYER ===== */
 const mini = document.getElementById("nowPlayingBar");
 
 let isDragging = false;
 let startX, startY, startLeft, startTop;
 
-// --- MOUSE & TOUCH START ---
-function dragStart(e) {
-  const tag = e.target.tagName;
-if (tag === "AUDIO" || tag === "BUTTON" || tag === "INPUT") return;
+function dragStart(e){
+  if (["BUTTON","INPUT"].includes(e.target.tagName)) return;
 
   isDragging = true;
   const rect = mini.getBoundingClientRect();
-
   startLeft = rect.left;
   startTop = rect.top;
 
   mini.style.right = "auto";
   mini.style.bottom = "auto";
 
-  if (e.type === "touchstart") {
+  if (e.type === "touchstart"){
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
   } else {
     startX = e.clientX;
     startY = e.clientY;
   }
+}
 
-  e.preventDefault();
+function dragMove(e){
+  if (!isDragging) return;
+
+  let x = e.type.includes("touch") ? e.touches[0].clientX : e.clientX;
+  let y = e.type.includes("touch") ? e.touches[0].clientY : e.clientY;
+
+  mini.style.left = startLeft + (x - startX) + "px";
+  mini.style.top  = startTop  + (y - startY) + "px";
+}
+
+function dragEnd(){
+  isDragging = false;
 }
 
 mini.addEventListener("mousedown", dragStart);
-mini.addEventListener("touchstart", dragStart, { passive: false });
-
-// --- MOUSE & TOUCH MOVE ---
-function dragMove(e) {
-  if (!isDragging) return;
-
-  let clientX, clientY;
-  if (e.type === "touchmove") {
-    clientX = e.touches[0].clientX;
-    clientY = e.touches[0].clientY;
-  } else {
-    clientX = e.clientX;
-    clientY = e.clientY;
-  }
-
-  mini.style.left = startLeft + (clientX - startX) + "px";
-  mini.style.top  = startTop  + (clientY - startY) + "px";
-
-  e.preventDefault();
-}
+mini.addEventListener("touchstart", dragStart, { passive:false });
 
 document.addEventListener("mousemove", dragMove);
-document.addEventListener("touchmove", dragMove, { passive: false });
-
-// --- MOUSE & TOUCH END ---
-function dragEnd() {
-  isDragging = false;
-}
+document.addEventListener("touchmove", dragMove, { passive:false });
 
 document.addEventListener("mouseup", dragEnd);
 document.addEventListener("touchend", dragEnd);
 
-document.querySelectorAll("nav a").forEach(link => {
-  link.addEventListener("click", e => {
-    e.preventDefault();
+function playSong(song){
+ index=sorted.indexOf(song);
+ player.src=song.file;
+ player.play().catch(()=>{});
+ titleEl.textContent=song.title;
+ playBtn.textContent="⏸";
+ playBtn.disabled=false;
+ history.replaceState({}, "", "?song="+encodeURIComponent(song.title));
+}
 
-    const targetHash = link.getAttribute("href"); // #home, #news
-
-    const cleanUrl =
-      window.location.origin +
-      window.location.pathname +
-      targetHash;
-
-    // Remove song param, keep only menu hash
-    window.history.replaceState({}, "", cleanUrl);
-
-    // Scroll to section manually
-    const section = document.querySelector(targetHash);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
-  });
-});
-/* ===== AUTO PLAY SONG FROM SHARED URL ===== */
-window.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const songTitle = params.get("song");
-
-  if (!songTitle) return;
-
-  const decodedTitle = decodeURIComponent(songTitle);
-
-  // Find song from library
-  const song = songs.find(s => s.title === decodedTitle);
-  if (!song) return;
-
-  // Load song into player
-  globalPlayer.src = song.file;
-  nowTitle.textContent = song.title;
-  pauseResumeBtn.disabled = false;
-  pauseResumeBtn.textContent = "▶";
-
-  // Try autoplay
-  globalPlayer.play().catch(() => {
-  // autoplay blocked silently
-  globalPlayer.muted = false;
+/* CLICK ALBUM */
+document.querySelectorAll(".album-art").forEach(img=>{
+ img.onclick=()=>{
+  const c=img.closest(".song-card");
+  playSong({title:c.dataset.title,file:c.dataset.file});
+ };
 });
 
-});
-document.addEventListener("click", () => {
-  if (globalPlayer.src && globalPlayer.paused) {
-    globalPlayer.play().catch(() => {});
-  }
-}, { once: true });
+/* CONTROLS */
+playBtn.onclick=()=>{
+ if(player.paused){player.play();playBtn.textContent="⏸"}
+ else{player.pause();playBtn.textContent="▶"}
+};
+nextBtn.onclick=()=>playSong(sorted[(++index)%sorted.length]);
+prevBtn.onclick=()=>playSong(sorted[(--index+sorted.length)%sorted.length]);
+player.onended=()=>nextBtn.click();
 
-  </script>
+/* POPUP */
+playAllBtn.onclick=()=>{
+ allSongs.innerHTML="";
+ sorted.forEach(s=>{
+  const li=document.createElement("li");
+  li.textContent=s.title;
+  li.onclick=()=>{playSong(s);closePopup()};
+  allSongs.appendChild(li);
+ });
+ popup.classList.add("show");
+ document.body.classList.add("popup-open");
+};
+function closePopup(){
+ popup.classList.remove("show");
+ document.body.classList.remove("popup-open");
+}
+
+/* AUTO PLAY FROM URL */
+window.onload=()=>{
+ const t=new URLSearchParams(location.search).get("song");
+ if(!t)return;
+ const s=sorted.find(x=>x.title===t);
+ if(s){player.src=s.file;titleEl.textContent=s.title;playBtn.disabled=false;}
+};
+/* ===== SEEK BAR & TIME ===== */
+const seekBar = document.getElementById("seekBar");
+const currentTimeEl = document.getElementById("currentTime");
+const durationEl = document.getElementById("duration");
+
+function formatTime(sec){
+  if (isNaN(sec)) return "0:00";
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+player.addEventListener("loadedmetadata", () => {
+  durationEl.textContent = formatTime(player.duration);
+});
+
+player.addEventListener("timeupdate", () => {
+  if (!player.duration) return;
+  currentTimeEl.textContent = formatTime(player.currentTime);
+  seekBar.value = (player.currentTime / player.duration) * 100;
+});
+
+seekBar.addEventListener("input", () => {
+  if (!player.duration) return;
+  player.currentTime = (seekBar.value / 100) * player.duration;
+});
+
+</script>
 
 </body>
 </html>
-

@@ -58,7 +58,6 @@ nav a:hover{color:#fff}
   max-width:1000px;
   margin:auto;
   padding:10px;
-  scroll-margin-top:90px; /* ✅ ADD THIS LINE */
 }
 
 .section h2{margin-bottom:15px}
@@ -512,6 +511,16 @@ function playOnFirstInteraction(){
 /* Works on mobile + desktop */
 document.addEventListener("click", playOnFirstInteraction, { once:true });
 document.addEventListener("touchstart", playOnFirstInteraction, { once:true });
+/* ===== CLEAN URL WHEN MENU IS CLICKED ===== */
+document.querySelectorAll('nav a').forEach(link => {
+  link.addEventListener('click', e => {
+    const hash = link.getAttribute('href'); // #home, #news etc
+
+    // Remove ?song= completely, keep only hash
+    history.replaceState({}, "", hash);
+  });
+});
+
 </script>
 </body>
 </html>

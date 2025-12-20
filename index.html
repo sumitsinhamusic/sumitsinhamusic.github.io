@@ -397,6 +397,56 @@ document.querySelectorAll("nav a").forEach(link => {
     }
   });
 });
+/* ===== AUTO PLAY SONG FROM SHARED URL ===== */
+window.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const songTitle = params.get("song");
+
+  if (!songTitle) return;
+
+  const decodedTitle = decodeURIComponent(songTitle);
+
+  // Find song from library
+  const song = songs.find(s => s.title === decodedTitle);
+  if (!song) return;
+
+  // Load song into player
+  globalPlayer.src = song.file;
+  nowTitle.textContent = song.title;
+  pauseResumeBtn.disabled = false;
+  pauseResumeBtn.textContent = "Pause";
+
+  // Try autoplay
+  globalPlayer.play().catch(() => {
+    showTapToPlayOverlay();
+  });
+});
+function showTapToPlayOverlay() {
+  const overlay = document.getElementById("tapToPlayOverlay");
+  overlay.style.display = "flex";
+
+  overlay.onclick = () => {
+    overlay.style.display = "none";
+    globalPlayer.play();
+  };
+}
+
   </script>
+  <div id="tapToPlayOverlay" style="
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.85);
+  color:#fff;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:3000;
+  font-size:20px;
+  cursor:pointer;
+  text-align:center;
+">
+  ▶ Tap anywhere to play song
+</div>
+
 </body>
 </html>

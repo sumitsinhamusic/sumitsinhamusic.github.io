@@ -234,12 +234,12 @@
     globalPlayer.currentTime = 0;
     nowTitle.textContent = "No song playing";
     pauseResumeBtn.disabled = true;
-    
+
     // Remove ?song= if song stopped
     const url = new URL(window.location);
-    url.searchParams.delete("song");
+    url.search = ''; // remove any query params
     window.history.replaceState({}, '', url);
-    
+
     return;
   }
 
@@ -250,11 +250,13 @@
   pauseResumeBtn.disabled = false;
   pauseResumeBtn.textContent = "Pause";
 
-  // Update URL with ?song=...
+  // Update URL with only ?song=...
   const url = new URL(window.location);
-  url.searchParams.set("song", encodeURIComponent(title));
+  url.search = `song=${encodeURIComponent(title)}`;
+  url.hash = ''; // remove any hash
   window.history.replaceState({}, '', url);
 }
+
 
     // Pause/Resume button
     pauseResumeBtn.addEventListener("click", () => {

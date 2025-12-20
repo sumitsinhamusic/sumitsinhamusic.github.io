@@ -361,29 +361,38 @@ globalPlayer.addEventListener("loadedmetadata", () => {
 });
 
 globalPlayer.addEventListener("timeupdate", () => {
-  if (isSeeking) return;
+  if (seeking) return;
 
   currentTimeEl.textContent = formatTime(globalPlayer.currentTime);
   seekBar.value =
     (globalPlayer.currentTime / globalPlayer.duration) * 100 || 0;
 });
 
-let isSeeking = false;
+["mousedown", "touchstart"].forEach(evt => {
+  seekBar.addEventListener(evt, e => e.stopPropagation());
+});
+let seeking = false;
 
-seekBar.addEventListener("mousedown", () => isSeeking = true);
-seekBar.addEventListener("touchstart", () => isSeeking = true);
+seekBar.addEventListener("pointerdown", () => {
+  seeking = true;
+});
 
-seekBar.addEventListener("input", () => {
-  if (!globalPlayer.duration) return;
-  const time = (seekBar.value / 100) * globalPlayer.duration;
+seekBar.addEventListener("pointermove", () => {
+  if (!seeking || !globalPlayer.duration) return;
+
+  const time =
+    (seekBar.value / 100) * globalPlayer.duration;
+
   currentTimeEl.textContent = formatTime(time);
 });
 
-seekBar.addEventListener("change", () => {
+seekBar.addEventListener("pointerup", () => {
   if (!globalPlayer.duration) return;
+
   globalPlayer.currentTime =
     (seekBar.value / 100) * globalPlayer.duration;
-  isSeeking = false;
+
+  seeking = false;
 });
 
     // Bind play buttons on cards
@@ -438,8 +447,8 @@ let startX, startY, startLeft, startTop;
 
 // --- MOUSE & TOUCH START ---
 function dragStart(e) {
-  const targetTag = e.target.tagName;
-  if (targetTag === "AUDIO" || targetTag === "BUTTON") return;
+  const tag = e.target.tagName;
+if (tag === "AUDIO" || tag === "BUTTON" || tag === "INPUT") return;
 
   isDragging = true;
   const rect = mini.getBoundingClientRect();

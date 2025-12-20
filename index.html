@@ -4,16 +4,25 @@
   <meta charset="UTF-8">
   <title>Sumit Sinha Music</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; }
-    h1 { color: #333; }
-    .song { margin: 20px; }
+    body { font-family: Arial, sans-serif; background: #f4f4f4; margin:0; }
+    h1 { color: #333; text-align:center; padding-top:20px; }
+    nav { background:#333; padding:10px; text-align:center; }
+    nav a { color:white; margin:0 15px; text-decoration:none; font-weight:bold; }
+    nav a:hover { text-decoration:underline; }
+    .song { margin: 40px; text-align:center; }
     audio { width: 300px; }
-    .share { font-size: 14px; margin-top: 5px; }
   </style>
 </head>
 <body>
+  <!-- Navigation Menu -->
+  <nav>
+    <a href="#adhuri">Adhuri Kahani</a>
+    <a href="#junoon">Junoon Hai Mere Khoon Mein</a>
+    <a href="#naamtera">Naam Tera Saanson Mein Hai</a>
+  </nav>
+
   <h1>🎵 Welcome to Sumit Sinha Music 🎵</h1>
-  <p>My official music website featuring Bollywood-inspired romantic and devotional songs.</p>
+  <p style="text-align:center;">My official music website featuring Bollywood-inspired romantic and devotional songs.</p>
 
   <!-- Song 1 -->
   <div class="song">
@@ -21,9 +30,6 @@
     <audio id="adhuri" controls>
       <source src="Adhuri Kahani.mp3" type="audio/mpeg">
     </audio>
-    <div class="share">
-      <a href="#adhuri">Direct link to play</a>
-    </div>
   </div>
 
   <!-- Song 2 -->
@@ -32,9 +38,6 @@
     <audio id="junoon" controls>
       <source src="Junoon Hai Mere Khoon Mein-Remix.wav" type="audio/wav">
     </audio>
-    <div class="share">
-      <a href="#junoon">Direct link to play</a>
-    </div>
   </div>
 
   <!-- Song 3 -->
@@ -43,9 +46,6 @@
     <audio id="naamtera" controls>
       <source src="Naam Tera Saanson Mein Hai.mp3" type="audio/mpeg">
     </audio>
-    <div class="share">
-      <a href="#naamtera">Direct link to play</a>
-    </div>
   </div>
 
   <script>

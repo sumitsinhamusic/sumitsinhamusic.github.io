@@ -314,90 +314,64 @@ const mini = document.getElementById("nowPlayingBar");
 let isDragging = false;
 let startX, startY, startLeft, startTop;
 
-mini.addEventListener("mousedown", (e) => {
-  // audio ya button pe click ho to drag na ho
-  if (e.target.tagName === "AUDIO" || e.target.tagName === "BUTTON") return;
+// --- MOUSE & TOUCH START ---
+function dragStart(e) {
+  const targetTag = e.target.tagName;
+  if (targetTag === "AUDIO" || targetTag === "BUTTON") return;
 
   isDragging = true;
   const rect = mini.getBoundingClientRect();
 
-  startX = e.clientX;
-  startY = e.clientY;
   startLeft = rect.left;
   startTop = rect.top;
 
-  // bottom/right ko free karo
   mini.style.right = "auto";
   mini.style.bottom = "auto";
-});
 
-document.addEventListener("mousemove", (e) => {
+  if (e.type === "touchstart") {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  } else {
+    startX = e.clientX;
+    startY = e.clientY;
+  }
+
+  e.preventDefault();
+}
+
+mini.addEventListener("mousedown", dragStart);
+mini.addEventListener("touchstart", dragStart, { passive: false });
+
+// --- MOUSE & TOUCH MOVE ---
+function dragMove(e) {
   if (!isDragging) return;
 
-  mini.style.left = startLeft + (e.clientX - startX) + "px";
-  mini.style.top  = startTop  + (e.clientY - startY) + "px";
-});
-
-document.addEventListener("mouseup", () => {
-  isDragging = false;
-});
-/* ===== PLAY SONG FROM SHARED LINK ===== */
-window.addEventListener("load", () => {
-  const params = new URLSearchParams(window.location.search);
-  const songParam = params.get("song");
-  if (!songParam) return;
-
-  const songTitle = decodeURIComponent(songParam);
-
-  const song = songs.find(s => s.title === songTitle);
-  if (!song) return;
-
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-  if (isMobile) {
-    const overlay = document.getElementById("tapOverlay");
-    const btn = document.getElementById("tapPlayBtn");
-    const label = document.getElementById("tapSongName");
-
-    label.textContent = song.title;
-    overlay.style.display = "flex";
-
-    btn.onclick = () => {
-      overlay.style.display = "none";
-      loadAndPlay(song.file, song.title);
-    };
+  let clientX, clientY;
+  if (e.type === "touchmove") {
+    clientX = e.touches[0].clientX;
+    clientY = e.touches[0].clientY;
   } else {
-    loadAndPlay(song.file, song.title);
+    clientX = e.clientX;
+    clientY = e.clientY;
   }
-});
+
+  mini.style.left = startLeft + (clientX - startX) + "px";
+  mini.style.top  = startTop  + (clientY - startY) + "px";
+
+  e.preventDefault();
+}
+
+document.addEventListener("mousemove", dragMove);
+document.addEventListener("touchmove", dragMove, { passive: false });
+
+// --- MOUSE & TOUCH END ---
+function dragEnd() {
+  isDragging = false;
+}
+
+document.addEventListener("mouseup", dragEnd);
+document.addEventListener("touchend", dragEnd);
 
   </script>
-  <!-- Mobile Tap To Play Overlay -->
-<div id="tapOverlay" style="
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.85);
-  z-index:2000;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  color:#fff;">
-  
-  <div>
-    <h2>▶ Tap to Play</h2>
-    <p id="tapSongName"></p>
-    <button id="tapPlayBtn" style="
-      padding:12px 22px;
-      font-size:18px;
-      background:#1db954;
-      border:none;
-      border-radius:10px;
-      color:#fff;">
-      Play
-    </button>
-  </div>
-</div>
-
 </body>
 </html>

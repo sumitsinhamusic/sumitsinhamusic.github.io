@@ -99,7 +99,13 @@
   flex:1;
   cursor:pointer;
 }
-    .now-playing .title { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .now-playing .title {
+  max-width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
     .now-playing button {
       background:#1db954; color:#fff; border:none; border-radius:5px; cursor:pointer;
       padding:6px 10px; font-weight:bold;
@@ -273,6 +279,10 @@
   { title: "Dil Ke Telephone", file: "Dil Ke Telephone.mp3" },
       // ... add up to 1000+ songs
     ];
+    const sortedSongs = [...songs].sort((a, b) =>
+  a.title.localeCompare(b.title)
+);
+
 let currentSongIndex = -1;
     // Elements
     const globalPlayer = document.getElementById("globalPlayer");
@@ -291,10 +301,8 @@ function updateUrlForSong(songTitle) {
 }
 
 function loadAndPlay(file, title) {
-  const index = songs.findIndex(s => s.file === file);
-  if (index === -1) return;
-
-  currentSongIndex = index;
+  const index = sortedSongs.findIndex(s => s.file === file);
+currentSongIndex = index;
 
   globalPlayer.src = file;
   globalPlayer.play().catch(() => {});
@@ -321,17 +329,17 @@ nextBtn.addEventListener("click", playNext);
 prevBtn.addEventListener("click", playPrev);
 
 function playNext() {
-  if (songs.length === 0) return;
-  currentSongIndex = (currentSongIndex + 1) % songs.length;
-  const song = songs[currentSongIndex];
+  if (sortedSongs.length === 0) return;
+  currentSongIndex = (currentSongIndex + 1) % sortedSongs.length;
+  const song = sortedSongs[currentSongIndex];
   loadAndPlay(song.file, song.title);
 }
 
 function playPrev() {
-  if (songs.length === 0) return;
+  if (sortedSongs.length === 0) return;
   currentSongIndex =
-    (currentSongIndex - 1 + songs.length) % songs.length;
-  const song = songs[currentSongIndex];
+    (currentSongIndex - 1 + sortedSongs.length) % sortedSongs.length;
+  const song = sortedSongs[currentSongIndex];
   loadAndPlay(song.file, song.title);
 }
 
@@ -353,16 +361,30 @@ globalPlayer.addEventListener("loadedmetadata", () => {
 });
 
 globalPlayer.addEventListener("timeupdate", () => {
+  if (isSeeking) return;
+
   currentTimeEl.textContent = formatTime(globalPlayer.currentTime);
   seekBar.value =
     (globalPlayer.currentTime / globalPlayer.duration) * 100 || 0;
 });
 
+let isSeeking = false;
+
+seekBar.addEventListener("mousedown", () => isSeeking = true);
+seekBar.addEventListener("touchstart", () => isSeeking = true);
+
 seekBar.addEventListener("input", () => {
-  globalPlayer.currentTime =
-    (seekBar.value / 100) * globalPlayer.duration;
+  if (!globalPlayer.duration) return;
+  const time = (seekBar.value / 100) * globalPlayer.duration;
+  currentTimeEl.textContent = formatTime(time);
 });
 
+seekBar.addEventListener("change", () => {
+  if (!globalPlayer.duration) return;
+  globalPlayer.currentTime =
+    (seekBar.value / 100) * globalPlayer.duration;
+  isSeeking = false;
+});
 
     // Bind play buttons on cards
     // Play song when album art clicked

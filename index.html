@@ -511,26 +511,24 @@ function playOnFirstInteraction(){
 /* Works on mobile + desktop */
 document.addEventListener("click", playOnFirstInteraction, { once:true });
 document.addEventListener("touchstart", playOnFirstInteraction, { once:true });
-/* ===== CLEAN URL WHEN MENU IS CLICKED ===== */
-/* ===== FIX MENU URL + SCROLL (NO SONG OVERLAP) ===== */
+/* ===== HARD RESET URL ON MENU CLICK (NO OVERLAP EVER) ===== */
 document.querySelectorAll("nav a").forEach(link => {
   link.addEventListener("click", e => {
-    e.preventDefault(); // 🔴 stop browser default
+    e.preventDefault(); // stop default anchor
 
-    const targetId = link.getAttribute("href"); // #home, #news
-    const targetEl = document.querySelector(targetId);
+    const hash = link.getAttribute("href"); // #home, #news
 
-    // Scroll manually
-    if (targetEl) {
-      targetEl.scrollIntoView({ behavior: "smooth" });
+    // Manual smooth scroll
+    const target = document.querySelector(hash);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
     }
 
-    // 🔴 REMOVE ?song COMPLETELY, KEEP ONLY HASH
-    history.replaceState({}, "", targetId);
+    // 🔥 HARD RESET URL (this is the key)
+    const cleanURL = window.location.origin + window.location.pathname + hash;
+    history.pushState({}, "", cleanURL);
   });
 });
-
-
 </script>
 </body>
 </html>

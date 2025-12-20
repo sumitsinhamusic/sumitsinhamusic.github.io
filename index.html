@@ -112,6 +112,90 @@
     }
     .now-playing button:hover { background:#1ed760; }
     .now-playing audio { display: none; }
+    @media (max-width: 768px) {
+
+  /* HEADER */
+  header {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 15px;
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  nav a {
+    margin: 5px 10px;
+    font-size: 14px;
+  }
+
+  header img {
+    max-width: 100px;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 40px 15px;
+  }
+
+  .hero h1 {
+    font-size: 26px;
+  }
+
+  .hero p {
+    font-size: 15px;
+  }
+
+  .hero button {
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+
+  /* SONG GRID */
+  .songs-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+  }
+
+  .song-card img {
+    height: 120px;
+  }
+
+  /* POPUP */
+  .popup-content {
+    width: 92%;
+    max-height: 85%;
+  }
+
+  /* MINI PLAYER */
+  .now-playing {
+    width: 90%;
+    left: 5%;
+    right: auto;
+    bottom: 12px;
+    padding: 8px 10px;
+    gap: 8px;
+    border-radius: 12px;
+  }
+
+  .now-playing .title {
+    max-width: 160px;
+    font-size: 14px;
+  }
+
+  #seekBar {
+    width: 80px;
+  }
+
+  .now-playing button {
+    padding: 5px 8px;
+    font-size: 13px;
+  }
+}
+
   </style>
 </head>
 <body>

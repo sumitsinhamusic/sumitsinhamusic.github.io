@@ -408,7 +408,7 @@ window.addEventListener("DOMContentLoaded", () => {
   globalPlayer.src = song.file;
   nowTitle.textContent = song.title;
   pauseResumeBtn.disabled = false;
-  pauseResumeBtn.textContent = "Pause";
+  pauseResumeBtn.textContent = "▶";
 
   // Try autoplay
   globalPlayer.play().catch(() => {

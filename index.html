@@ -131,7 +131,8 @@
     <button id="playAllBtn">▶ Play All Songs</button>
   </div>
 
- <!-- Featured Songs -->
+  <!-- Featured Songs -->
+  <!-- Featured Songs -->
 <div class="section" id="library">
   <h2>🔥 Trending Songs</h2>
   <div class="songs-grid" id="songsGrid">
@@ -264,6 +265,7 @@
       pauseResumeBtn.textContent = "Pause";
     });
 
+    // Bind play buttons on cards
     // Play song when album art clicked
 document.querySelectorAll(".song-card .album-art").forEach(img => {
   img.addEventListener("click", () => {
@@ -271,7 +273,6 @@ document.querySelectorAll(".song-card .album-art").forEach(img => {
     loadAndPlay(card.dataset.file, card.dataset.title);
   });
 });
-
 
     // Popup logic
     function openPopup() {

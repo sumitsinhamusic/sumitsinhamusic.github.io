@@ -418,35 +418,18 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Try autoplay
   globalPlayer.play().catch(() => {
-    showTapToPlayOverlay();
-  });
+  // autoplay blocked silently
+  globalPlayer.muted = false;
 });
-function showTapToPlayOverlay() {
-  const overlay = document.getElementById("tapToPlayOverlay");
-  overlay.style.display = "flex";
 
-  overlay.onclick = () => {
-    overlay.style.display = "none";
-    globalPlayer.play();
-  };
-}
+});
+document.addEventListener("click", () => {
+  if (globalPlayer.src && globalPlayer.paused) {
+    globalPlayer.play().catch(() => {});
+  }
+}, { once: true });
 
   </script>
-  <div id="tapToPlayOverlay" style="
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.85);
-  color:#fff;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:3000;
-  font-size:20px;
-  cursor:pointer;
-  text-align:center;
-">
-  ▶ Tap anywhere to play song
-</div>
 
 </body>
 </html>

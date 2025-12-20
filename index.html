@@ -13,10 +13,21 @@
 
     header {
       background: #000;
-      padding: 20px;
+      padding: 30px 20px 10px;
       text-align: center;
-      font-size: 24px;
-      font-weight: bold;
+    }
+
+    header img {
+      max-width: 220px;
+      height: auto;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+    }
+
+    header h1 {
+      font-size: 28px;
+      margin: 0;
       letter-spacing: 2px;
     }
 
@@ -45,10 +56,10 @@
       border-radius: 10px;
     }
 
-    h1 {
+    h2 {
       text-align: center;
       margin-bottom: 20px;
-      font-size: 32px;
+      font-size: 24px;
     }
 
     .song {
@@ -78,15 +89,6 @@
       flex: 0 0 300px;
     }
 
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: #000;
-      margin-top: 40px;
-      font-size: 14px;
-      color: #aaa;
-    }
-
     .highlight button {
       background: #1db954;
       border: none;
@@ -96,15 +98,29 @@
       cursor: pointer;
       border-radius: 5px;
       color: #fff;
+      margin-top: 10px;
     }
 
     .highlight button:hover {
       background: #1ed760;
     }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #000;
+      margin-top: 40px;
+      font-size: 14px;
+      color: #aaa;
+    }
   </style>
 </head>
 <body>
-  <header>🎵 Sumit Sinha Music 🎵</header>
+  <!-- Header with Logo -->
+  <header>
+    <img src="Sumit Sinha Music.png" alt="Sumit Sinha Music Logo">
+    <h1>SUMIT SINHA MUSIC</h1>
+  </header>
 
   <!-- Navigation Menu -->
   <nav>
@@ -114,7 +130,7 @@
   </nav>
 
   <div class="container">
-    <h1>Bollywood-inspired Romantic & Devotional Songs</h1>
+    <h2>Bollywood-inspired Romantic & Devotional Songs</h2>
 
     <!-- Song 1 -->
     <div class="song" id="adhuri-block">
@@ -153,7 +169,6 @@
   <footer>© 2025 Sumit Sinha | Hosted on GitHub Pages</footer>
 
   <script>
-    // Handle direct links with autoplay prompt
     window.onload = function() {
       const hash = window.location.hash.substring(1);
       if (hash) {
@@ -161,7 +176,7 @@
         const playButton = document.getElementById(hash + "-play");
         if (block && playButton) {
           block.scrollIntoView({behavior: "smooth"});
-          playButton.style.display = "block"; // show big Play button
+          playButton.style.display = "block";
         }
       }
     };

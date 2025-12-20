@@ -341,7 +341,63 @@ document.addEventListener("mousemove", (e) => {
 document.addEventListener("mouseup", () => {
   isDragging = false;
 });
+/* ===== PLAY SONG FROM SHARED LINK ===== */
+window.addEventListener("load", () => {
+  const params = new URLSearchParams(window.location.search);
+  const songParam = params.get("song");
+  if (!songParam) return;
+
+  const songTitle = decodeURIComponent(songParam);
+
+  const song = songs.find(s => s.title === songTitle);
+  if (!song) return;
+
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  if (isMobile) {
+    const overlay = document.getElementById("tapOverlay");
+    const btn = document.getElementById("tapPlayBtn");
+    const label = document.getElementById("tapSongName");
+
+    label.textContent = song.title;
+    overlay.style.display = "flex";
+
+    btn.onclick = () => {
+      overlay.style.display = "none";
+      loadAndPlay(song.file, song.title);
+    };
+  } else {
+    loadAndPlay(song.file, song.title);
+  }
+});
 
   </script>
+  <!-- Mobile Tap To Play Overlay -->
+<div id="tapOverlay" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  z-index:2000;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:#fff;">
+  
+  <div>
+    <h2>▶ Tap to Play</h2>
+    <p id="tapSongName"></p>
+    <button id="tapPlayBtn" style="
+      padding:12px 22px;
+      font-size:18px;
+      background:#1db954;
+      border:none;
+      border-radius:10px;
+      color:#fff;">
+      Play
+    </button>
+  </div>
+</div>
+
 </body>
 </html>

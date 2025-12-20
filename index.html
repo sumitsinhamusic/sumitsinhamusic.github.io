@@ -33,20 +33,24 @@
     }
     .hero button:hover { background:#1ed760; color:#fff; }
 
-    /* Sections */
+    /* Section */
     .section { max-width:1000px; margin:40px auto; padding:20px; }
     .section h2 { margin-bottom:20px; }
 
     /* Song Grid */
-    .songs-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:20px; }
+    .songs-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:20px; }
     .song-card {
       background:#fff; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);
       padding:15px; text-align:center; transition:transform 0.2s;
     }
-    .song-card:hover { transform:scale(1.05); }
-    .song-card img { max-width:100%; border-radius:5px; }
+    .song-card:hover { transform:scale(1.03); }
+    .song-card img { width:100%; height:140px; object-fit:cover; border-radius:5px; }
     .song-card h3 { margin:10px 0; font-size:16px; }
-    .song-card audio { width:100%; }
+    .song-card button {
+      background:#1db954; color:#fff; border:none; border-radius:5px; cursor:pointer;
+      padding:8px 12px; font-weight:bold;
+    }
+    .song-card button:hover { background:#1ed760; }
 
     /* News Cards */
     .news-card { background:#fff; margin:20px 0; padding:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
@@ -56,27 +60,37 @@
     footer a { color:#1db954; text-decoration:none; margin:0 10px; }
     footer a:hover { color:#fff; }
 
-    /* Popup (overlay) */
+    /* Popup */
     .popup {
-      position:fixed; inset:0;
-      display:none; /* hidden by default */
+      position:fixed; inset:0; display:none;
       justify-content:center; align-items:center;
-      background:rgba(0,0,0,0.7);
-      z-index:1000; /* ensure on top */
+      background:rgba(0,0,0,0.7); z-index:1000;
     }
-    .popup.show { display:flex; } /* toggle visibility with class */
+    .popup.show { display:flex; }
     .popup-content {
       background:#fff; padding:20px; border-radius:10px;
-      max-height:80%; overflow-y:auto; width:400px;
+      max-height:80%; overflow-y:auto; width:420px;
       box-shadow:0 10px 30px rgba(0,0,0,0.3);
     }
     .popup-content h3 { margin-top:0; }
     .popup-content ul { list-style:none; padding:0; margin:0; }
     .popup-content li { margin:10px 0; cursor:pointer; color:#1db954; font-weight:bold; }
     .popup-content li:hover { color:#000; }
-
-    /* Prevent background scroll when popup open */
     body.popup-open { overflow:hidden; }
+
+    /* Now Playing Bar (single shared audio) */
+    .now-playing {
+      position:fixed; left:0; right:0; bottom:0;
+      background:#111; color:#fff; display:flex; align-items:center; gap:15px;
+      padding:10px 15px; box-shadow:0 -4px 10px rgba(0,0,0,0.3); z-index:900;
+    }
+    .now-playing .title { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .now-playing button {
+      background:#1db954; color:#fff; border:none; border-radius:5px; cursor:pointer;
+      padding:6px 10px; font-weight:bold;
+    }
+    .now-playing button:hover { background:#1ed760; }
+    .now-playing audio { width:320px; max-width:50vw; }
   </style>
 </head>
 <body>
@@ -103,26 +117,21 @@
   <div class="section" id="library">
     <h2>🔥 Trending Songs</h2>
     <div class="songs-grid" id="songsGrid">
-      <div class="song-card">
+      <!-- Cards use buttons (no native audio controls) to drive the shared player -->
+      <div class="song-card" data-file="Adhuri Kahani.mp3" data-title="Adhuri Kahani">
         <img src="album1.jpg" alt="Album Art" />
         <h3>Adhuri Kahani</h3>
-        <audio controls>
-          <source src="Adhuri Kahani.mp3" type="audio/mpeg" />
-        </audio>
+        <button class="play-btn">Play / Stop</button>
       </div>
-      <div class="song-card">
+      <div class="song-card" data-file="Junoon Hai Mere Khoon Mein-Remix.wav" data-title="Junoon Hai Mere Khoon Mein">
         <img src="album2.jpg" alt="Album Art" />
         <h3>Junoon Hai Mere Khoon Mein</h3>
-        <audio controls>
-          <source src="Junoon Hai Mere Khoon Mein-Remix.wav" type="audio/wav" />
-        </audio>
+        <button class="play-btn">Play / Stop</button>
       </div>
-      <div class="song-card">
+      <div class="song-card" data-file="Naam Tera Saanson Mein Hai.mp3" data-title="Naam Tera Saanson Mein Hai">
         <img src="album3.jpg" alt="Album Art" />
         <h3>Naam Tera Saanson Mein Hai</h3>
-        <audio controls>
-          <source src="Naam Tera Saanson Mein Hai.mp3" type="audio/mpeg" />
-        </audio>
+        <button class="play-btn">Play / Stop</button>
       </div>
     </div>
   </div>
@@ -160,6 +169,13 @@
     </div>
   </div>
 
+  <!-- Now Playing (single shared audio) -->
+  <div class="now-playing" id="nowPlayingBar">
+    <span class="title" id="nowTitle">No song playing</span>
+    <button id="pauseResumeBtn" disabled>Pause</button>
+    <audio id="globalPlayer" controls></audio>
+  </div>
+
   <script>
     // Library data
     const songs = [
@@ -169,89 +185,93 @@
       // ... add up to 1000+ songs
     ];
 
-    let currentAudio = null;
-
-    // Stop all other audios (home players)
-    function stopAllHomeAudios(except = null) {
-      document.querySelectorAll("audio").forEach(audio => {
-        if (audio !== except) {
-          audio.pause();
-          audio.currentTime = 0;
-        }
-      });
-    }
-
-    // Ensure only one home audio plays at a time
-    document.addEventListener("play", function (e) {
-      if (e.target.tagName.toLowerCase() === "audio") {
-        stopAllHomeAudios(e.target);
-        currentAudio = e.target;
-      }
-    }, true);
-
-    // Popup logic
+    // Elements
+    const globalPlayer = document.getElementById("globalPlayer");
+    const nowTitle = document.getElementById("nowTitle");
+    const pauseResumeBtn = document.getElementById("pauseResumeBtn");
+    const playAllBtn = document.getElementById("playAllBtn");
     const popup = document.getElementById("popup");
     const allSongsList = document.getElementById("allSongs");
-    const playAllBtn = document.getElementById("playAllBtn");
     const closePopupBtn = document.getElementById("closePopupBtn");
 
+    // Utility: load and play in shared player
+    function loadAndPlay(file, title) {
+      // If same song and currently playing → stop
+      if (globalPlayer.src && globalPlayer.src.includes(file) && !globalPlayer.paused) {
+        globalPlayer.pause();
+        globalPlayer.currentTime = 0;
+        nowTitle.textContent = "No song playing";
+        pauseResumeBtn.disabled = true;
+        return;
+      }
+
+      // Load new source and play
+      globalPlayer.src = file;
+      globalPlayer.play().catch(() => {
+        // Autoplay might be blocked; user can press play manually
+      });
+      nowTitle.textContent = title || file;
+      pauseResumeBtn.disabled = false;
+      pauseResumeBtn.textContent = "Pause";
+    }
+
+    // Pause/Resume button
+    pauseResumeBtn.addEventListener("click", () => {
+      if (globalPlayer.paused) {
+        globalPlayer.play();
+        pauseResumeBtn.textContent = "Pause";
+      } else {
+        globalPlayer.pause();
+        pauseResumeBtn.textContent = "Resume";
+      }
+    });
+
+    // When playback ends
+    globalPlayer.addEventListener("ended", () => {
+      nowTitle.textContent = "No song playing";
+      pauseResumeBtn.disabled = true;
+      pauseResumeBtn.textContent = "Pause";
+    });
+
+    // Bind play buttons on cards
+    document.querySelectorAll(".song-card .play-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const card = btn.closest(".song-card");
+        const file = card.dataset.file;
+        const title = card.dataset.title;
+        loadAndPlay(file, title);
+      });
+    });
+
+    // Popup logic
     function openPopup() {
       // Populate list
       allSongsList.innerHTML = "";
       songs.forEach(song => {
         const li = document.createElement("li");
         li.textContent = song.title;
-        li.onclick = () => { togglePlayPopup(song.file); closePopup(); };
+        li.onclick = () => { loadAndPlay(song.file, song.title); closePopup(); };
         allSongsList.appendChild(li);
       });
 
-      // Show popup
       popup.classList.add("show");
       document.body.classList.add("popup-open");
     }
-
     function closePopup() {
       popup.classList.remove("show");
       document.body.classList.remove("popup-open");
     }
+    playAllBtn.addEventListener("click", openPopup);
+    closePopupBtn.addEventListener("click", closePopup);
 
     // Close when clicking outside content
     popup.addEventListener("click", (e) => {
       if (e.target === popup) closePopup();
     });
-
-    // Close with Escape key
+    // Escape key closes
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && popup.classList.contains("show")) {
-        closePopup();
-      }
+      if (e.key === "Escape" && popup.classList.contains("show")) closePopup();
     });
-
-    // Toggle play from popup selection (single global playback)
-    function togglePlayPopup(file) {
-      // If the same audio object was created by popup and matches file, toggle stop
-      if (currentAudio && currentAudio.src.includes(file) && !currentAudio.paused) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-        currentAudio = null;
-        return;
-      }
-
-      // Stop all home audios and previous popup audio
-      stopAllHomeAudios();
-      if (currentAudio && !currentAudio.paused) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-      }
-
-      // Create a new audio for popup-selected file
-      currentAudio = new Audio(file);
-      currentAudio.play();
-    }
-
-    // Bind buttons
-    playAllBtn.addEventListener("click", openPopup);
-    closePopupBtn.addEventListener("click", closePopup);
   </script>
 </body>
 </html>

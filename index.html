@@ -480,8 +480,38 @@ seekBar.addEventListener("input", () => {
   if (!player.duration) return;
   player.currentTime = (seekBar.value / 100) * player.duration;
 });
+/* ===== PLAY SONG ON FIRST USER CLICK (NO UI CHANGE) ===== */
 
+let pendingAutoSong = null;
+
+/* Detect song from URL */
+window.addEventListener("load", () => {
+  const params = new URLSearchParams(window.location.search);
+  const songTitle = params.get("song");
+  if (!songTitle) return;
+
+  const found = sorted.find(s => s.title === songTitle);
+  if (!found) return;
+
+  pendingAutoSong = found;
+  titleEl.textContent = found.title;
+  playBtn.disabled = false;
+});
+
+/* First click anywhere → play */
+function playOnFirstInteraction(){
+  if (!pendingAutoSong) return;
+
+  playSong(pendingAutoSong);
+  pendingAutoSong = null;
+
+  document.removeEventListener("click", playOnFirstInteraction);
+  document.removeEventListener("touchstart", playOnFirstInteraction);
+}
+
+/* Works on mobile + desktop */
+document.addEventListener("click", playOnFirstInteraction, { once:true });
+document.addEventListener("touchstart", playOnFirstInteraction, { once:true });
 </script>
-
 </body>
 </html>

@@ -131,33 +131,28 @@
     <button id="playAllBtn">▶ Play All Songs</button>
   </div>
 
-  <!-- Featured Songs -->
-  <div class="section" id="library">
-    <h2>🔥 Trending Songs</h2>
-    <div class="songs-grid" id="songsGrid">
-      <!-- Cards use buttons (no native audio controls) to drive the shared player -->
-      <div class="song-card" data-file="Adhuri Kahani.mp3" data-title="Adhuri Kahani">
-        <img src="Adhuri Kahani.png" alt="Album Art" />
-        <h3>Adhuri Kahani</h3>
-        <button class="play-btn">▶ </button>
-      </div>
-      <div class="song-card" data-file="Junoon Hai Mere Khoon Mein-Remix.wav" data-title="Junoon Hai Mere Khoon Mein">
-        <img src="Junoon Hai Mere Khoon Mein.jpg" alt="Album Art" />
-        <h3>Junoon Hai Mere Khoon Mein</h3>
-        <button class="play-btn">▶ </button>
-      </div>
-      <div class="song-card" data-file="Naam Tera Saanson Mein Hai.mp3" data-title="Naam Tera Saanson Mein Hai">
-        <img src="Naam Tera Saanson Mein Hai.png" alt="Album Art" />
-        <h3>Naam Tera Saanson Mein Hai</h3>
-        <button class="play-btn">▶ </button>
-      </div>
-      <div class="song-card" data-file="Raaz Hai Tu Mere Wajood Mein.mp3" data-title="Raaz Hai Tu Mere Wajood Mein">
-        <img src="Raaz Hai Tu Mere Wajood Mein-Thumbnail.jpg" alt="Album Art" />
-        <h3>Raaz Hai Tu Mere Wajood Mein</h3>
-        <button class="play-btn">▶ </button>
-      </div>
+ <!-- Featured Songs -->
+<div class="section" id="library">
+  <h2>🔥 Trending Songs</h2>
+  <div class="songs-grid" id="songsGrid">
+    <div class="song-card" data-file="Adhuri Kahani.mp3" data-title="Adhuri Kahani">
+      <img src="Adhuri Kahani.png" alt="Album Art" class="album-art" />
+      <h3>Adhuri Kahani</h3>
+    </div>
+    <div class="song-card" data-file="Junoon Hai Mere Khoon Mein-Remix.wav" data-title="Junoon Hai Mere Khoon Mein">
+      <img src="Junoon Hai Mere Khoon Mein.jpg" alt="Album Art" class="album-art" />
+      <h3>Junoon Hai Mere Khoon Mein</h3>
+    </div>
+    <div class="song-card" data-file="Naam Tera Saanson Mein Hai.mp3" data-title="Naam Tera Saanson Mein Hai">
+      <img src="Naam Tera Saanson Mein Hai.png" alt="Album Art" class="album-art" />
+      <h3>Naam Tera Saanson Mein Hai</h3>
+    </div>
+    <div class="song-card" data-file="Raaz Hai Tu Mere Wajood Mein.mp3" data-title="Raaz Hai Tu Mere Wajood Mein">
+      <img src="Raaz Hai Tu Mere Wajood Mein-Thumbnail.jpg" alt="Album Art" class="album-art" />
+      <h3>Raaz Hai Tu Mere Wajood Mein</h3>
     </div>
   </div>
+</div>
 
   <!-- News -->
   <div class="section" id="news">
@@ -269,15 +264,14 @@
       pauseResumeBtn.textContent = "Pause";
     });
 
-    // Bind play buttons on cards
-    document.querySelectorAll(".song-card .play-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const card = btn.closest(".song-card");
-        const file = card.dataset.file;
-        const title = card.dataset.title;
-        loadAndPlay(file, title);
-      });
-    });
+    // Play song when album art clicked
+document.querySelectorAll(".song-card .album-art").forEach(img => {
+  img.addEventListener("click", () => {
+    const card = img.closest(".song-card");
+    loadAndPlay(card.dataset.file, card.dataset.title);
+  });
+});
+
 
     // Popup logic
     function openPopup() {

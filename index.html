@@ -79,11 +79,29 @@
     body.popup-open { overflow:hidden; }
 
     /* Now Playing Bar (single shared audio) */
-    .now-playing {
-      position:fixed; left:0; right:0; bottom:0;
-      background:#111; color:#fff; display:flex; align-items:center; gap:15px;
-      padding:10px 15px; box-shadow:0 -4px 10px rgba(0,0,0,0.3); z-index:900;
-    }
+    /* FLOATING DRAGGABLE MINI PLAYER */
+.now-playing{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  width:330px;
+  background:#111;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 14px;
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
+  z-index:999;
+  cursor:move;
+  user-select:none;
+}
+
+.now-playing audio{
+  width:150px;
+}
+
     .now-playing .title { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .now-playing button {
       background:#1db954; color:#fff; border:none; border-radius:5px; cursor:pointer;
@@ -284,6 +302,40 @@
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && popup.classList.contains("show")) closePopup();
     });
+    /* ===== MINI PLAYER DRAG LOGIC ===== */
+const mini = document.getElementById("nowPlayingBar");
+
+let isDragging = false;
+let startX, startY, startLeft, startTop;
+
+mini.addEventListener("mousedown", (e) => {
+  // audio ya button pe click ho to drag na ho
+  if (e.target.tagName === "AUDIO" || e.target.tagName === "BUTTON") return;
+
+  isDragging = true;
+  const rect = mini.getBoundingClientRect();
+
+  startX = e.clientX;
+  startY = e.clientY;
+  startLeft = rect.left;
+  startTop = rect.top;
+
+  // bottom/right ko free karo
+  mini.style.right = "auto";
+  mini.style.bottom = "auto";
+});
+
+document.addEventListener("mousemove", (e) => {
+  if (!isDragging) return;
+
+  mini.style.left = startLeft + (e.clientX - startX) + "px";
+  mini.style.top  = startTop  + (e.clientY - startY) + "px";
+});
+
+document.addEventListener("mouseup", () => {
+  isDragging = false;
+});
+
   </script>
 </body>
 </html>

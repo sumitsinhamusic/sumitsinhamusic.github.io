@@ -1,22 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Sumit Sinha Music</title>
   <style>
-    body { margin:0; font-family:'Segoe UI',Arial,sans-serif; background:#f4f4f4; }
+    body { margin:0; font-family:'Segoe UI', Arial, sans-serif; background:#f4f4f4; }
 
-    /* Header */
+    /* Header: menu left, logo right */
     header {
       background:#000;
       padding:10px 30px;
       display:flex;
-      justify-content:space-between; /* menu left, logo right */
+      justify-content:space-between;
       align-items:center;
     }
     header img { max-width:120px; border-radius:10px; }
-
-    /* Navigation */
     nav a { color:#1db954; margin:0 15px; text-decoration:none; font-weight:bold; }
     nav a:hover { color:#fff; }
 
@@ -35,12 +33,12 @@
     }
     .hero button:hover { background:#1ed760; color:#fff; }
 
-    /* Section */
+    /* Sections */
     .section { max-width:1000px; margin:40px auto; padding:20px; }
     .section h2 { margin-bottom:20px; }
 
     /* Song Grid */
-    .songs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:20px; }
+    .songs-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:20px; }
     .song-card {
       background:#fff; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);
       padding:15px; text-align:center; transition:transform 0.2s;
@@ -58,17 +56,31 @@
     footer a { color:#1db954; text-decoration:none; margin:0 10px; }
     footer a:hover { color:#fff; }
 
-    /* Popup */
-    .popup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; }
-    .popup-content { background:#fff; padding:20px; border-radius:10px; max-height:80%; overflow-y:auto; width:400px; }
+    /* Popup (overlay) */
+    .popup {
+      position:fixed; inset:0;
+      display:none; /* hidden by default */
+      justify-content:center; align-items:center;
+      background:rgba(0,0,0,0.7);
+      z-index:1000; /* ensure on top */
+    }
+    .popup.show { display:flex; } /* toggle visibility with class */
+    .popup-content {
+      background:#fff; padding:20px; border-radius:10px;
+      max-height:80%; overflow-y:auto; width:400px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.3);
+    }
     .popup-content h3 { margin-top:0; }
-    .popup-content ul { list-style:none; padding:0; }
+    .popup-content ul { list-style:none; padding:0; margin:0; }
     .popup-content li { margin:10px 0; cursor:pointer; color:#1db954; font-weight:bold; }
     .popup-content li:hover { color:#000; }
+
+    /* Prevent background scroll when popup open */
+    body.popup-open { overflow:hidden; }
   </style>
 </head>
 <body>
-  <!-- Header with Menu left, Logo right -->
+  <!-- Header -->
   <header>
     <nav>
       <a href="#home">Home</a>
@@ -77,39 +89,45 @@
       <a href="#movies">Movies/Web Series</a>
       <a href="#about">About</a>
     </nav>
-    <img src="Sumit Sinha Music.png" alt="Logo">
+    <img src="Sumit Sinha Music.png" alt="Logo" />
   </header>
 
-  <!-- Hero Banner -->
+  <!-- Hero -->
   <div class="hero" id="home">
     <h1>🎵 Welcome to Sumit Sinha Music 🎵</h1>
     <p>Bollywood-inspired Romantic & Devotional Songs</p>
-    <button onclick="openPopup()">▶ Play All Songs</button>
+    <button id="playAllBtn">▶ Play All Songs</button>
   </div>
 
-  <!-- Featured Songs Section -->
+  <!-- Featured Songs -->
   <div class="section" id="library">
     <h2>🔥 Trending Songs</h2>
-    <div class="songs-grid">
+    <div class="songs-grid" id="songsGrid">
       <div class="song-card">
-        <img src="album1.jpg" alt="Album Art">
+        <img src="album1.jpg" alt="Album Art" />
         <h3>Adhuri Kahani</h3>
-        <audio controls><source src="Adhuri Kahani.mp3" type="audio/mpeg"></audio>
+        <audio controls>
+          <source src="Adhuri Kahani.mp3" type="audio/mpeg" />
+        </audio>
       </div>
       <div class="song-card">
-        <img src="album2.jpg" alt="Album Art">
+        <img src="album2.jpg" alt="Album Art" />
         <h3>Junoon Hai Mere Khoon Mein</h3>
-        <audio controls><source src="Junoon Hai Mere Khoon Mein-Remix.wav" type="audio/wav"></audio>
+        <audio controls>
+          <source src="Junoon Hai Mere Khoon Mein-Remix.wav" type="audio/wav" />
+        </audio>
       </div>
       <div class="song-card">
-        <img src="album3.jpg" alt="Album Art">
+        <img src="album3.jpg" alt="Album Art" />
         <h3>Naam Tera Saanson Mein Hai</h3>
-        <audio controls><source src="Naam Tera Saanson Mein Hai.mp3" type="audio/mpeg"></audio>
+        <audio controls>
+          <source src="Naam Tera Saanson Mein Hai.mp3" type="audio/mpeg" />
+        </audio>
       </div>
     </div>
   </div>
 
-  <!-- News Section -->
+  <!-- News -->
   <div class="section" id="news">
     <h2>📰 Latest News & Updates</h2>
     <div class="news-card">
@@ -133,27 +151,28 @@
     <a href="https://www.facebook.com/s.k.185" target="_blank">Facebook</a>
   </footer>
 
-  <!-- Popup for Play All -->
+  <!-- Popup -->
   <div class="popup" id="popup">
-    <div class="popup-content">
+    <div class="popup-content" role="dialog" aria-modal="true" aria-label="Select a Song">
       <h3>Select a Song</h3>
       <ul id="allSongs"></ul>
-      <button onclick="closePopup()">Close</button>
+      <button id="closePopupBtn">Close</button>
     </div>
   </div>
 
   <script>
+    // Library data
     const songs = [
-      {title:"Adhuri Kahani", file:"Adhuri Kahani.mp3"},
-      {title:"Junoon Hai Mere Khoon Mein", file:"Junoon Hai Mere Khoon Mein-Remix.wav"},
-      {title:"Naam Tera Saanson Mein Hai", file:"Naam Tera Saanson Mein Hai.mp3"},
+      { title: "Adhuri Kahani", file: "Adhuri Kahani.mp3" },
+      { title: "Junoon Hai Mere Khoon Mein", file: "Junoon Hai Mere Khoon Mein-Remix.wav" },
+      { title: "Naam Tera Saanson Mein Hai", file: "Naam Tera Saanson Mein Hai.mp3" },
       // ... add up to 1000+ songs
     ];
 
     let currentAudio = null;
 
-    // Stop all other audios before playing new one
-    function stopAllAudios(except=null) {
+    // Stop all other audios (home players)
+    function stopAllHomeAudios(except = null) {
       document.querySelectorAll("audio").forEach(audio => {
         if (audio !== except) {
           audio.pause();
@@ -162,32 +181,77 @@
       });
     }
 
-    // Attach listener to all audio players for toggle behavior
-    document.addEventListener("play", function(e){
-      stopAllAudios(e.target);
-      currentAudio = e.target;
+    // Ensure only one home audio plays at a time
+    document.addEventListener("play", function (e) {
+      if (e.target.tagName.toLowerCase() === "audio") {
+        stopAllHomeAudios(e.target);
+        currentAudio = e.target;
+      }
     }, true);
 
-    // Popup functions
+    // Popup logic
+    const popup = document.getElementById("popup");
+    const allSongsList = document.getElementById("allSongs");
+    const playAllBtn = document.getElementById("playAllBtn");
+    const closePopupBtn = document.getElementById("closePopupBtn");
+
     function openPopup() {
-      document.getElementById("popup").style.display="flex";
-      const allSongsList = document.getElementById("allSongs");
-      allSongsList.innerHTML="";
-      songs.forEach(song=>{
-        const li=document.createElement("li");
-        li.textContent=song.title;
-        li.style.cursor="pointer";
-        li.onclick=()=>{ togglePlay(song.file); closePopup(); };
+      // Populate list
+      allSongsList.innerHTML = "";
+      songs.forEach(song => {
+        const li = document.createElement("li");
+        li.textContent = song.title;
+        li.onclick = () => { togglePlayPopup(song.file); closePopup(); };
         allSongsList.appendChild(li);
       });
+
+      // Show popup
+      popup.classList.add("show");
+      document.body.classList.add("popup-open");
     }
 
     function closePopup() {
-      document.getElementById("popup").style.display="none";
+      popup.classList.remove("show");
+      document.body.classList.remove("popup-open");
     }
 
-    function togglePlay(file) {
-      // If same song is already playing → stop it
+    // Close when clicking outside content
+    popup.addEventListener("click", (e) => {
+      if (e.target === popup) closePopup();
+    });
+
+    // Close with Escape key
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && popup.classList.contains("show")) {
+        closePopup();
+      }
+    });
+
+    // Toggle play from popup selection (single global playback)
+    function togglePlayPopup(file) {
+      // If the same audio object was created by popup and matches file, toggle stop
       if (currentAudio && currentAudio.src.includes(file) && !currentAudio.paused) {
         currentAudio.pause();
-        currentAudio.currentTime = 0
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+        return;
+      }
+
+      // Stop all home audios and previous popup audio
+      stopAllHomeAudios();
+      if (currentAudio && !currentAudio.paused) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      }
+
+      // Create a new audio for popup-selected file
+      currentAudio = new Audio(file);
+      currentAudio.play();
+    }
+
+    // Bind buttons
+    playAllBtn.addEventListener("click", openPopup);
+    closePopupBtn.addEventListener("click", closePopup);
+  </script>
+</body>
+</html>

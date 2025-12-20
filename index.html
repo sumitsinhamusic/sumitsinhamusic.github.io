@@ -512,14 +512,24 @@ function playOnFirstInteraction(){
 document.addEventListener("click", playOnFirstInteraction, { once:true });
 document.addEventListener("touchstart", playOnFirstInteraction, { once:true });
 /* ===== CLEAN URL WHEN MENU IS CLICKED ===== */
-document.querySelectorAll('nav a').forEach(link => {
-  link.addEventListener('click', e => {
-    const hash = link.getAttribute('href'); // #home, #news etc
+/* ===== FIX MENU URL + SCROLL (NO SONG OVERLAP) ===== */
+document.querySelectorAll("nav a").forEach(link => {
+  link.addEventListener("click", e => {
+    e.preventDefault(); // 🔴 stop browser default
 
-    // Remove ?song= completely, keep only hash
-    history.replaceState({}, "", hash);
+    const targetId = link.getAttribute("href"); // #home, #news
+    const targetEl = document.querySelector(targetId);
+
+    // Scroll manually
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: "smooth" });
+    }
+
+    // 🔴 REMOVE ?song COMPLETELY, KEEP ONLY HASH
+    history.replaceState({}, "", targetId);
   });
 });
+
 
 </script>
 </body>

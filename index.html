@@ -96,6 +96,8 @@
   z-index:999;
   cursor:move;
   user-select:none;
+  flex:1;
+  cursor:pointer;
 }
     .now-playing .title { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .now-playing button {
@@ -196,10 +198,23 @@
 
   <!-- Now Playing (single shared audio) -->
   <div class="now-playing" id="nowPlayingBar">
-    <span class="title" id="nowTitle">No song playing</span>
-    <button id="pauseResumeBtn" disabled>▶</button>
-    <audio id="globalPlayer"></audio>
+  <button id="prevBtn">⏮</button>
+
+  <button id="pauseResumeBtn" disabled>▶</button>
+
+  <button id="nextBtn">⏭</button>
+
+  <div style="flex:1;">
+    <div class="title" id="nowTitle">No song playing</div>
+    <div style="display:flex; align-items:center; gap:6px;">
+      <span id="currentTime">0:00</span>
+      <input type="range" id="seekBar" value="0" min="0" max="100">
+      <span id="duration">0:00</span>
+    </div>
   </div>
+
+  <audio id="globalPlayer"></audio>
+</div>
 
   <script>
     // Library data
@@ -247,9 +262,18 @@
   // Newly added songs
   { title: "Tu Hi Mera Raasta", file: "Tu Hi Mera Raasta.mp3" },
   { title: "Tu laut aa", file: "Tu laut aa.mp3" },
+  { title: "Mera Sach Yahin", file: "Mera Sach Yahin.mp3" },
+  { title: "Khaali Aasmaan", file: "Khaali Aasmaan.mp3" },
+  { title: "Khaali Aasmaan Slow", file: "Khaali Aasmaan Slow.mp3" },
+  { title: "Ishq Dariya", file: "Ishq Dariya.mp3" },
+  { title: "Khamosh Ishq", file: "Khamosh Ishq.mp3" },
+  { title: "Tum Se Juda", file: "Tum Se Juda.mp3" },
+  { title: "Nagin Ki Dhun", file: "Nagin Ki Dhun.mp3" },
+  { title: "Naagin Si Dhun V1", file: "Naagin Si Dhun V1.mp3" },
+  { title: "Dil Ke Telephone", file: "Dil Ke Telephone.mp3" },
       // ... add up to 1000+ songs
     ];
-
+let currentSongIndex = -1;
     // Elements
     const globalPlayer = document.getElementById("globalPlayer");
     const nowTitle = document.getElementById("nowTitle");
@@ -267,18 +291,10 @@ function updateUrlForSong(songTitle) {
 }
 
 function loadAndPlay(file, title) {
-  // Toggle stop if same song
-  if (globalPlayer.src && globalPlayer.src.includes(file) && !globalPlayer.paused) {
-    globalPlayer.pause();
-    globalPlayer.currentTime = 0;
-    nowTitle.textContent = "No song playing";
-    pauseResumeBtn.disabled = true;
+  const index = songs.findIndex(s => s.file === file);
+  if (index === -1) return;
 
-    // Clean URL completely
-    const cleanUrl = window.location.origin + window.location.pathname;
-    window.history.replaceState({}, "", cleanUrl);
-    return;
-  }
+  currentSongIndex = index;
 
   globalPlayer.src = file;
   globalPlayer.play().catch(() => {});
@@ -286,9 +302,9 @@ function loadAndPlay(file, title) {
   pauseResumeBtn.disabled = false;
   pauseResumeBtn.textContent = "⏸";
 
-  // 🔥 THIS IS THE KEY
   updateUrlForSong(title);
 }
+
     // Pause/Resume button
     pauseResumeBtn.addEventListener("click", () => {
       if (globalPlayer.paused) {
@@ -298,13 +314,55 @@ function loadAndPlay(file, title) {
         globalPlayer.pause();
         pauseResumeBtn.textContent = "▶";      }
     });
+const nextBtn = document.getElementById("nextBtn");
+const prevBtn = document.getElementById("prevBtn");
+
+nextBtn.addEventListener("click", playNext);
+prevBtn.addEventListener("click", playPrev);
+
+function playNext() {
+  if (songs.length === 0) return;
+  currentSongIndex = (currentSongIndex + 1) % songs.length;
+  const song = songs[currentSongIndex];
+  loadAndPlay(song.file, song.title);
+}
+
+function playPrev() {
+  if (songs.length === 0) return;
+  currentSongIndex =
+    (currentSongIndex - 1 + songs.length) % songs.length;
+  const song = songs[currentSongIndex];
+  loadAndPlay(song.file, song.title);
+}
 
     // When playback ends
-    globalPlayer.addEventListener("ended", () => {
-      nowTitle.textContent = "No song playing";
-      pauseResumeBtn.disabled = true;
-      pauseResumeBtn.textContent = "⏸";
-    });
+    globalPlayer.addEventListener("ended", playNext);
+    const seekBar = document.getElementById("seekBar");
+const currentTimeEl = document.getElementById("currentTime");
+const durationEl = document.getElementById("duration");
+
+function formatTime(sec) {
+  if (isNaN(sec)) return "0:00";
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+globalPlayer.addEventListener("loadedmetadata", () => {
+  durationEl.textContent = formatTime(globalPlayer.duration);
+});
+
+globalPlayer.addEventListener("timeupdate", () => {
+  currentTimeEl.textContent = formatTime(globalPlayer.currentTime);
+  seekBar.value =
+    (globalPlayer.currentTime / globalPlayer.duration) * 100 || 0;
+});
+
+seekBar.addEventListener("input", () => {
+  globalPlayer.currentTime =
+    (seekBar.value / 100) * globalPlayer.duration;
+});
+
 
     // Bind play buttons on cards
     // Play song when album art clicked
@@ -324,6 +382,12 @@ document.querySelectorAll(".song-card .album-art").forEach(img => {
         li.textContent = song.title;
         li.onclick = () => { loadAndPlay(song.file, song.title); closePopup(); };
         allSongsList.appendChild(li);
+        li.onclick = () => {
+  currentSongIndex = songs.findIndex(s => s.title === song.title);
+  loadAndPlay(song.file, song.title);
+  closePopup();
+};
+
       });
 
       popup.classList.add("show");

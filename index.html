@@ -97,11 +97,6 @@
   cursor:move;
   user-select:none;
 }
-
-.now-playing audio{
-  width:150px;
-}
-
     .now-playing .title { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .now-playing button {
       background:#1db954; color:#fff; border:none; border-radius:5px; cursor:pointer;
@@ -202,10 +197,10 @@
 
   <!-- Now Playing (single shared audio) -->
   <div class="now-playing" id="nowPlayingBar">
-    <span class="title" id="nowTitle">No song playing</span>
-    <button id="pauseResumeBtn" disabled>Pause</button>
-    <audio id="globalPlayer" controls></audio>
-  </div>
+  <span class="title" id="nowTitle">No song playing</span>
+  <button id="pauseResumeBtn" disabled>Pause</button>
+  <audio id="globalPlayer"></audio>
+</div>
 
   <script>
     // Library data

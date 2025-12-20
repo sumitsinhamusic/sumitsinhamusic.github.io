@@ -103,7 +103,7 @@
       padding:6px 10px; font-weight:bold;
     }
     .now-playing button:hover { background:#1ed760; }
-    .now-playing audio { width:320px; max-width:50vw; }
+    .now-playing audio { width:140px; max-width:40vw; }
   </style>
 </head>
 <body>
@@ -199,7 +199,7 @@
   <div class="now-playing" id="nowPlayingBar">
     <span class="title" id="nowTitle">No song playing</span>
     <button id="pauseResumeBtn" disabled>Pause</button>
-    <audio id="globalPlayer" controls></audio>
+    <audio id="globalPlayer" controls controlsList="nodownload noplaybackrate"></audio>
   </div>
 
   <script>
@@ -407,7 +407,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Load song into player
   globalPlayer.src = song.file;
-  nowTitle.textContent = song.title;
+  nowTitle.textContent = title;
   pauseResumeBtn.disabled = false;
   pauseResumeBtn.textContent = "Pause";
 

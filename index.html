@@ -227,7 +227,6 @@
     const closePopupBtn = document.getElementById("closePopupBtn");
 
     // Utility: load and play in shared player
-    <script>
 function updateUrlForSong(songTitle) {
   const baseUrl = window.location.origin + window.location.pathname;
   const newUrl = `${baseUrl}?song=${encodeURIComponent(songTitle)}`;
@@ -376,7 +375,7 @@ function dragEnd() {
 
 document.addEventListener("mouseup", dragEnd);
 document.addEventListener("touchend", dragEnd);
-<script>
+
 document.querySelectorAll("nav a").forEach(link => {
   link.addEventListener("click", e => {
     e.preventDefault();

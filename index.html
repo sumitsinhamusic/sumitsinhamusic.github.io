@@ -8,6 +8,7 @@
     h1 { color: #333; }
     .song { margin: 20px; }
     audio { width: 300px; }
+    .share { font-size: 14px; margin-top: 5px; }
   </style>
 </head>
 <body>
@@ -17,29 +18,48 @@
   <!-- Song 1 -->
   <div class="song">
     <h3>Adhuri Kahani</h3>
-    <audio controls>
+    <audio id="adhuri" controls>
       <source src="Adhuri Kahani.mp3" type="audio/mpeg">
-      Your browser does not support the audio element.
     </audio>
+    <div class="share">
+      <a href="#adhuri">Direct link to play</a>
+    </div>
   </div>
 
   <!-- Song 2 -->
   <div class="song">
     <h3>Junoon Hai Mere Khoon Mein (Remix)</h3>
-    <audio controls>
+    <audio id="junoon" controls>
       <source src="Junoon Hai Mere Khoon Mein-Remix.wav" type="audio/wav">
-      Your browser does not support the audio element.
     </audio>
+    <div class="share">
+      <a href="#junoon">Direct link to play</a>
+    </div>
   </div>
 
   <!-- Song 3 -->
   <div class="song">
     <h3>Naam Tera Saanson Mein Hai</h3>
-    <audio controls>
+    <audio id="naamtera" controls>
       <source src="Naam Tera Saanson Mein Hai.mp3" type="audio/mpeg">
-      Your browser does not support the audio element.
     </audio>
+    <div class="share">
+      <a href="#naamtera">Direct link to play</a>
+    </div>
   </div>
 
+  <script>
+    // Auto-play specific song if URL has a hash
+    window.onload = function() {
+      const hash = window.location.hash.substring(1); // remove #
+      if (hash) {
+        const player = document.getElementById(hash);
+        if (player) {
+          player.play(); // auto-play that song
+          player.scrollIntoView({behavior: "smooth"}); // scroll to it
+        }
+      }
+    };
+  </script>
 </body>
 </html>

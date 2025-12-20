@@ -103,7 +103,7 @@
       padding:6px 10px; font-weight:bold;
     }
     .now-playing button:hover { background:#1ed760; }
-    .now-playing audio { width:140px; max-width:40vw; }
+    .now-playing audio { display: none; }
   </style>
 </head>
 <body>
@@ -199,7 +199,7 @@
   <div class="now-playing" id="nowPlayingBar">
     <span class="title" id="nowTitle">No song playing</span>
     <button id="pauseResumeBtn" disabled>Pause</button>
-    <audio id="globalPlayer" controls controlsList="nodownload noplaybackrate"></audio>
+    <audio id="globalPlayer"></audio>
   </div>
 
   <script>
@@ -246,7 +246,7 @@ function loadAndPlay(file, title) {
   globalPlayer.play().catch(() => {});
   nowTitle.textContent = title;
   pauseResumeBtn.disabled = false;
-  pauseResumeBtn.textContent = "Pause";
+  pauseResumeBtn.textContent = "⏸";
 
   // 🔥 THIS IS THE KEY
   updateUrlForSong(title);
@@ -255,18 +255,17 @@ function loadAndPlay(file, title) {
     pauseResumeBtn.addEventListener("click", () => {
       if (globalPlayer.paused) {
         globalPlayer.play();
-        pauseResumeBtn.textContent = "Pause";
+        pauseResumeBtn.textContent = "⏸";
       } else {
         globalPlayer.pause();
-        pauseResumeBtn.textContent = "Resume";
-      }
+        pauseResumeBtn.textContent = "▶";      }
     });
 
     // When playback ends
     globalPlayer.addEventListener("ended", () => {
       nowTitle.textContent = "No song playing";
       pauseResumeBtn.disabled = true;
-      pauseResumeBtn.textContent = "Pause";
+      pauseResumeBtn.textContent = "⏸";
     });
 
     // Bind play buttons on cards
@@ -407,7 +406,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Load song into player
   globalPlayer.src = song.file;
-  nowTitle.textContent = title;
+  nowTitle.textContent = song.title;
   pauseResumeBtn.disabled = false;
   pauseResumeBtn.textContent = "Pause";
 

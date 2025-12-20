@@ -52,6 +52,14 @@
     footer { background:#000; color:#aaa; text-align:center; padding:20px; margin-top:40px; }
     footer a { color:#1db954; text-decoration:none; margin:0 10px; }
     footer a:hover { color:#fff; }
+
+    /* Popup */
+    .popup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; }
+    .popup-content { background:#fff; padding:20px; border-radius:10px; max-height:80%; overflow-y:auto; width:400px; }
+    .popup-content h3 { margin-top:0; }
+    .popup-content ul { list-style:none; padding:0; }
+    .popup-content li { margin:10px 0; cursor:pointer; color:#1db954; font-weight:bold; }
+    .popup-content li:hover { color:#000; }
   </style>
 </head>
 <body>
@@ -124,8 +132,8 @@
   </footer>
 
   <!-- Popup for Play All -->
-  <div class="popup" id="popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center;">
-    <div class="popup-content" style="background:#fff; padding:20px; border-radius:10px; max-height:80%; overflow-y:auto; width:400px;">
+  <div class="popup" id="popup">
+    <div class="popup-content">
       <h3>Select a Song</h3>
       <ul id="allSongs"></ul>
       <button onclick="closePopup()">Close</button>
@@ -140,6 +148,25 @@
       // ... add up to 1000+ songs
     ];
 
+    let currentAudio = null;
+
+    // Stop all other audios before playing new one
+    function stopAllAudios(except=null) {
+      document.querySelectorAll("audio").forEach(audio => {
+        if (audio !== except) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+      });
+    }
+
+    // Attach listener to all audio players for toggle behavior
+    document.addEventListener("play", function(e){
+      stopAllAudios(e.target);
+      currentAudio = e.target;
+    }, true);
+
+    // Popup functions
     function openPopup() {
       document.getElementById("popup").style.display="flex";
       const allSongsList = document.getElementById("allSongs");
@@ -148,7 +175,7 @@
         const li=document.createElement("li");
         li.textContent=song.title;
         li.style.cursor="pointer";
-        li.onclick=()=>{ playSong(song.file); closePopup(); };
+        li.onclick=()=>{ togglePlay(song.file); closePopup(); };
         allSongsList.appendChild(li);
       });
     }
@@ -157,10 +184,14 @@
       document.getElementById("popup").style.display="none";
     }
 
-    function playSong(file) {
-      const audio = new Audio(file);
-      audio.play();
-    }
-  </script>
-</body>
-</html>
+    function togglePlay(file) {
+      // If same song is already playing → stop it
+      if (currentAudio && currentAudio.src.includes(file) && !currentAudio.paused) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+        return;
+      }
+
+      // Otherwise stop all and play new one
+      stopAllAud

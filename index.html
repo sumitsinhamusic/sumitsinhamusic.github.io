@@ -276,15 +276,14 @@
     });
 
     // Bind play buttons on cards
-    document.querySelectorAll('header nav a').forEach(link => {
-  link.addEventListener('click', e => {
-    const targetHash = link.getAttribute('href');
-    const url = new URL(window.location);
-    url.hash = targetHash; // update hash only
-    window.history.replaceState({}, "", url);
-    // let browser scroll happen naturally
-  });
-});
+    document.querySelectorAll(".song-card .play-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const card = btn.closest(".song-card");
+        const file = card.dataset.file;
+        const title = card.dataset.title;
+        loadAndPlay(file, title);
+      });
+    });
 
     // Popup logic
     function openPopup() {

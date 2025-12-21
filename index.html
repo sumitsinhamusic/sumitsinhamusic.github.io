@@ -165,6 +165,23 @@ body.popup-open{overflow:hidden}
   padding:6px 10px;
   cursor:pointer;
 }
+#pagination button{
+  margin:4px;
+  padding:6px 12px;
+  border:none;
+  border-radius:5px;
+  background:#1db954;
+  color:#fff;
+  cursor:pointer;
+}
+#pagination button.active{
+  background:#111;
+}
+#pagination button:disabled{
+  background:#aaa;
+  cursor:not-allowed;
+}
+
 .now-playing button:hover{background:#1ed760}
 .now-playing audio{display:none}
 </style>
@@ -195,72 +212,9 @@ body.popup-open{overflow:hidden}
 <div class="section" id="library">
   <h2>🔥 Trending Songs</h2>
 
-  <div class="songs-grid">
-    <div class="song-card" data-title="Adhuri Kahani" data-file="Adhuri Kahani.mp3">
-      <img src="Adhuri Kahani.png" class="album-art">
-    </div>
+  <div class="songs-grid" id="trendingGrid"></div>
 
-    <div class="song-card" data-title="Junoon Hai Mere Khoon Mein" data-file="Junoon Hai Mere Khoon Mein-Remix.wav">
-      <img src="Junoon Hai Mere Khoon Mein.jpg" class="album-art">
-    </div>
-
-    <div class="song-card" data-title="Naam Tera Saanson Mein Hai" data-file="Naam Tera Saanson Mein Hai.mp3">
-      <img src="Naam Tera Saanson Mein Hai.png" class="album-art">
-    </div>
-
-    <div class="song-card" data-title="Raaz Hai Tu Mere Wajood Mein" data-file="Raaz Hai Tu Mere Wajood Mein.mp3">
-      <img src="Raaz Hai Tu Mere Wajood Mein-Thumbnail.jpg" class="album-art">
-    </div>
-
-    <div class="song-card" data-title="Khaali Aasmaan" data-file="Khaali Aasmaan.mp3">
-      <img src="Khaali Aasmaan.png" class="album-art">
-    </div>
-
-    <div class="song-card" data-title="Mera Sach Yahin" data-file="Mera Sach Yahin.mp3">
-      <img src="Mera Sach Yahin Rakh.png" class="album-art">
-    </div>
-
-    <div class="song-card" data-title="Sher Dil" data-file="SHER DIL-V1.mp3">
-      <img src="Sher Dil.png" class="album-art">
-    </div>
-    
-    <div class="song-card" data-title="Saans Saans" data-file="Saans Saans.mp3">
-      <img src="Saans Saans.png" class="album-art">
-    </div>
-
-    <div class="song-card" data-title="Nagin Ki Dhun" data-file="Nagin Ki Dhun.mp3">
-      <img src="Nagin Ki Dhun.png" class="album-art">
-    </div>
-
-    <div class="song-card" data-title="Soda Pop Lagelu" data-file="Soda Pop Lagelu.mp3">
-      <img src="Soda Pop Lagelu.jpg" class="album-art">
-    </div>
-
-    <div class="song-card" data-title="DESI DARU DAAL" data-file="DESI DARU DAAL.mp3">
-      <img src="DESI DARU DAAL.png" class="album-art">
-    </div>
-    
-    <div class="song-card" data-title="Meri Duniya" data-file="Meri Duniya.mp3">
-      <img src="Meri Duniya.png" class="album-art">
-    </div>
-    
-    <div class="song-card" data-title="Ishq Dariya" data-file="Ishq Dariya.mp3">
-      <img src="Ishq Dariya.png" class="album-art">
-    </div>
-    
-    <div class="song-card" data-title="Dil Ke Dhaage" data-file="Dil Ke Dhaage (Remastered).mp3">
-      <img src="Dil Ke Dhaage.png" class="album-art">
-    </div>
-    
-    <div class="song-card" data-title="Tere Naam Se Saans Chale" data-file="Tere Naam Se Saans Chale.mp3">
-      <img src="Tere Naam Se Saans Chale.png" class="album-art">
-    </div>
-    
-    <div class="song-card" data-title="Gediyaan Tere Naam" data-file="Gediyaan Tere Naam.mp3">
-      <img src="Gediyaan Tere Naam.png" class="album-art">
-    </div>
-    
-  </div>
+<div id="pagination" style="text-align:center;margin:20px 0;"></div>
 </div>
 
 <!-- ===== NEWS ===== -->
@@ -385,6 +339,88 @@ const songs = [
       // ... add up to 1000+ songs
     ];
 
+/* ===== TRENDING PAGINATION ===== */
+const trendingSongs = [
+  { title:"Adhuri Kahani", file:"Adhuri Kahani.mp3", img:"Adhuri Kahani.png" },
+  { title:"Junoon Hai Mere Khoon Mein", file:"Junoon Hai Mere Khoon Mein-Remix.wav", img:"Junoon Hai Mere Khoon Mein.jpg" },
+  { title:"Naam Tera Saanson Mein Hai", file:"Naam Tera Saanson Mein Hai.mp3", img:"Naam Tera Saanson Mein Hai.png" },
+  { title:"Raaz Hai Tu Mere Wajood Mein", file:"Raaz Hai Tu Mere Wajood Mein.mp3", img:"Raaz Hai Tu Mere Wajood Mein-Thumbnail.jpg" },
+  { title:"Khaali Aasmaan", file:"Khaali Aasmaan.mp3", img:"Khaali Aasmaan.png" },
+  { title:"Mera Sach Yahin", file:"Mera Sach Yahin.mp3", img:"Mera Sach Yahin Rakh.png" },
+  { title:"Sher Dil", file:"SHER DIL-V1.mp3", img:"Sher Dil.png" },
+  { title:"Saans Saans", file:"Saans Saans.mp3", img:"Saans Saans.png" },
+  { title:"Nagin Ki Dhun", file:"Nagin Ki Dhun.mp3", img:"Nagin Ki Dhun.png" },
+  { title:"Soda Pop Lagelu", file:"Soda Pop Lagelu.mp3", img:"Soda Pop Lagelu.jpg" },
+  { title:"DESI DARU DAAL", file:"DESI DARU DAAL.mp3", img:"DESI DARU DAAL.png" },
+  { title:"Meri Duniya", file:"Meri Duniya.mp3", img:"Meri Duniya.png" },
+  { title:"Ishq Dariya", file:"Ishq Dariya.mp3", img:"Ishq Dariya.png" },
+  { title:"Dil Ke Dhaage", file:"Dil Ke Dhaage (Remastered).mp3", img:"Dil Ke Dhaage.png" },
+  { title:"Tere Naam Se Saans Chale", file:"Tere Naam Se Saans Chale.mp3", img:"Tere Naam Se Saans Chale.png" },
+  { title:"Gediyaan Tere Naam", file:"Gediyaan Tere Naam.mp3", img:"Gediyaan Tere Naam.png" }
+];
+
+const perPage = 10;
+let currentPage = 1;
+
+const grid = document.getElementById("trendingGrid");
+const pager = document.getElementById("pagination");
+
+function renderTrending(page){
+  grid.innerHTML = "";
+  currentPage = page;
+
+  const start = (page - 1) * perPage;
+  const end = start + perPage;
+
+  trendingSongs.slice(start, end).forEach(song=>{
+    const div = document.createElement("div");
+    div.className = "song-card";
+    div.dataset.title = song.title;
+    div.dataset.file = song.file;
+    div.innerHTML = `<img src="${song.img}" class="album-art">`;
+    grid.appendChild(div);
+  });
+
+  attachAlbumClicks();
+  renderPagination();
+}
+
+function renderPagination(){
+  pager.innerHTML = "";
+  const totalPages = Math.ceil(trendingSongs.length / perPage);
+
+  const prev = document.createElement("button");
+  prev.textContent = "Prev";
+  prev.disabled = currentPage === 1;
+  prev.onclick = ()=>renderTrending(currentPage-1);
+  pager.appendChild(prev);
+
+  for(let i=1;i<=totalPages;i++){
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    if(i===currentPage) btn.classList.add("active");
+    btn.onclick = ()=>renderTrending(i);
+    pager.appendChild(btn);
+  }
+
+  const next = document.createElement("button");
+  next.textContent = "Next";
+  next.disabled = currentPage === totalPages;
+  next.onclick = ()=>renderTrending(currentPage+1);
+  pager.appendChild(next);
+}
+
+function attachAlbumClicks(){
+  document.querySelectorAll(".album-art").forEach(img=>{
+    img.onclick = ()=>{
+      const c = img.closest(".song-card");
+      playSong({title:c.dataset.title,file:c.dataset.file});
+    };
+  });
+}
+
+renderTrending(1);
+
 const sorted=[...songs].sort((a,b)=>a.title.localeCompare(b.title));
 let index=-1;
 
@@ -483,6 +519,21 @@ function closePopup(){
  popup.classList.remove("show");
  document.body.classList.remove("popup-open");
 }
+/* ===== CLOSE POPUP: OUTSIDE CLICK + ESC KEY ===== */
+
+/* Close when clicking outside popup-content */
+popup.addEventListener("click", (e) => {
+  if (e.target === popup) {
+    closePopup();
+  }
+});
+
+/* Close when pressing ESC key */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && popup.classList.contains("show")) {
+    closePopup();
+  }
+});
 
 /* AUTO PLAY FROM URL */
 window.onload=()=>{

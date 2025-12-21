@@ -358,6 +358,12 @@ const trendingSongs = [
   { title:"Tere Naam Se Saans Chale", file:"Tere Naam Se Saans Chale.mp3", img:"Tere Naam Se Saans Chale.png" },
   { title:"Gediyaan Tere Naam", file:"Gediyaan Tere Naam.mp3", img:"Gediyaan Tere Naam.png" }
 ];
+function scrollToTrending() {
+  document.getElementById("library").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
 
 const perPage = 12;
 let currentPage = 1;
@@ -383,6 +389,9 @@ function renderTrending(page){
 
   attachAlbumClicks();
   renderPagination();
+
+  // ✅ FIX SCROLL POSITION
+  scrollToTrending();
 }
 
 function renderPagination(){
@@ -621,5 +630,4 @@ document.querySelectorAll("nav a").forEach(link => {
 </script>
 </body>
 </html>
-
 

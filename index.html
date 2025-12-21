@@ -66,38 +66,36 @@ nav a:hover{color:#fff}
 
 /* ========== SONG GRID ========== */
 .songs-grid{
-  display:flex;
+  display:grid;
+  grid-template-rows: repeat(2, 1fr); /* ✅ 2 songs vertically */
+  grid-auto-flow: column;            /* scroll by columns */
+  grid-auto-columns: 220px;           /* fixed card width */
   gap:20px;
-  overflow-x:auto;
-  padding-bottom:10px;
-  scroll-behavior:smooth;
-}
 
+  overflow-x:auto;
+  overflow-y:hidden;                 /* ❌ no vertical scroll */
+  padding-bottom:10px;
+
+  scroll-behavior:smooth;
+  scrollbar-width:none;              /* Firefox */
+}
 .songs-grid::-webkit-scrollbar{
-  height:8px;
-}
-.songs-grid::-webkit-scrollbar-track{
-  background:#e0e0e0;
-  border-radius:10px;
-}
-.songs-grid::-webkit-scrollbar-thumb{
-  background:#1db954;
-  border-radius:10px;
+  display:none;                      /* ❌ hide horizontal scrollbar */
 }
 
 /* Song cards fixed width for horizontal scroll */
 .song-card{
-  min-width:220px;
-  flex-shrink:0;
+  width:220px;
 }
-.song-card:hover{transform:scale(1.03)}
 .song-card img{
   width:100%;
-  height:280px;
+  height:220px;          /* 🔥 perfect square */
   object-fit:cover;
-  border-radius:6px;
+  border-radius:8px;
   cursor:pointer;
+  background:#ddd;
 }
+.song-card:hover{transform:scale(1.03)}
 
 /* ========== NEWS ========== */
 .news-card{

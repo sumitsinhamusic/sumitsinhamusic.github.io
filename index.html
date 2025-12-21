@@ -230,6 +230,40 @@ body.popup-open{overflow:hidden}
 
 .now-playing button:hover{background:#1ed760}
 .now-playing audio{display:none}
+  /* ===== PLAY BUTTON OVERLAY ===== */
+.song-card{
+  position: relative;
+}
+
+.play-overlay{
+  position:absolute;
+  inset:12px;
+  background:rgba(0,0,0,0.45);
+  border-radius:6px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  transition:0.25s ease;
+  cursor:pointer;
+}
+
+.song-card:hover .play-overlay{
+  opacity:1;
+}
+
+.play-overlay span{
+  width:64px;
+  height:64px;
+  background:#1db954;
+  color:#fff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  box-shadow:0 10px 25px rgba(0,0,0,.5);
+}
 </style>
 </head>
 
@@ -423,7 +457,12 @@ function renderTrending(){
       targetCard = div;
     }
 
-    div.innerHTML = `<img src="${song.img}" class="album-art">`;
+    div.innerHTML = `
+  <img src="${song.img}" class="album-art">
+  <div class="play-overlay">
+    <span>▶</span>
+  </div>
+`;
     grid.appendChild(div);
   });
 
@@ -442,11 +481,16 @@ function renderTrending(){
 }
 
 function attachAlbumClicks(){
-  document.querySelectorAll(".album-art").forEach(img=>{
-    img.onclick = ()=>{
-      const c = img.closest(".song-card");
-      playSong({title:c.dataset.title,file:c.dataset.file});
+  document.querySelectorAll(".song-card").forEach(card=>{
+    const play = ()=>{
+      playSong({
+        title: card.dataset.title,
+        file: card.dataset.file
+      });
     };
+
+    card.querySelector(".album-art").onclick = play;
+    card.querySelector(".play-overlay").onclick = play;
   });
 }
 

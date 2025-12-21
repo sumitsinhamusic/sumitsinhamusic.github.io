@@ -153,22 +153,6 @@ body.popup-open{overflow:hidden}
   padding:6px 10px;
   cursor:pointer;
 }
-#pagination button{
-  margin:4px;
-  padding:6px 12px;
-  border:none;
-  border-radius:5px;
-  background:#1db954;
-  color:#fff;
-  cursor:pointer;
-}
-#pagination button.active{
-  background:#111;
-}
-#pagination button:disabled{
-  background:#aaa;
-  cursor:not-allowed;
-}
 /* ========== MOBILE MINI PLAYER FIX ========== */
 @media (max-width: 768px) {
   .now-playing {
@@ -234,7 +218,6 @@ body.popup-open{overflow:hidden}
 
   <div class="songs-grid" id="trendingGrid"></div>
 
-<div id="pagination" style="text-align:center;margin:20px 0;"></div>
 </div>
 
 <!-- ===== NEWS ===== -->
@@ -379,34 +362,25 @@ const trendingSongs = [
   { title:"Tere Naam Se Saans Chale", file:"Tere Naam Se Saans Chale.mp3", img:"Tere Naam Se Saans Chale.png" },
   { title:"Gediyaan Tere Naam", file:"Gediyaan Tere Naam.mp3", img:"Gediyaan Tere Naam.png" }
 ];
-function scrollToTrending() {
-  document.getElementById("library").scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-}
-
-const perPage = 12;
-let currentPage = 1;
 
 const grid = document.getElementById("trendingGrid");
-const pager = document.getElementById("pagination");
-
-function renderTrending(page){
+function renderTrending(){
   grid.innerHTML = "";
-  currentPage = page;
 
-  const start = (page - 1) * perPage;
-  const end = start + perPage;
+  let targetCard = null;
 
-  trendingSongs.slice(start, end).forEach(song=>{
+  trendingSongs.forEach(song=>{
     const div = document.createElement("div");
     div.className = "song-card";
     div.dataset.title = song.title;
     div.dataset.file = song.file;
 
-    if (songFromURL && song.title.toLowerCase() === songFromURL.toLowerCase()) {
+    if (
+      songFromURL &&
+      song.title.toLowerCase() === songFromURL.toLowerCase()
+    ) {
       div.classList.add("active");
+      targetCard = div;
     }
 
     div.innerHTML = `<img src="${song.img}" class="album-art">`;
@@ -414,33 +388,17 @@ function renderTrending(page){
   });
 
   attachAlbumClicks();
-  renderPagination();
-  scrollToTrending();
-}
 
-function renderPagination(){
-  pager.innerHTML = "";
-  const totalPages = Math.ceil(trendingSongs.length / perPage);
-
-  const prev = document.createElement("button");
-  prev.textContent = "Prev";
-  prev.disabled = currentPage === 1;
-  prev.onclick = ()=>renderTrending(currentPage-1);
-  pager.appendChild(prev);
-
-  for(let i=1;i<=totalPages;i++){
-    const btn = document.createElement("button");
-    btn.textContent = i;
-    if(i===currentPage) btn.classList.add("active");
-    btn.onclick = ()=>renderTrending(i);
-    pager.appendChild(btn);
+  /* Scroll to song if opened via URL */
+  if (targetCard) {
+    requestAnimationFrame(() => {
+      targetCard.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center"
+      });
+    });
   }
-
-  const next = document.createElement("button");
-  next.textContent = "Next";
-  next.disabled = currentPage === totalPages;
-  next.onclick = ()=>renderTrending(currentPage+1);
-  pager.appendChild(next);
 }
 
 function attachAlbumClicks(){
@@ -451,30 +409,10 @@ function attachAlbumClicks(){
     };
   });
 }
-function openTrendingPageForSong(songTitle){
-  const index = trendingSongs.findIndex(
-    s => s.title.toLowerCase() === songTitle.toLowerCase()
-  );
-
-  if (index === -1) return false; // not in trending
-
-  const page = Math.floor(index / perPage) + 1;
-  renderTrending(page);
-  return true;
-}
 
 const params = new URLSearchParams(window.location.search);
 const songFromURL = params.get("song");
-
-if (songFromURL) {
-  const opened = openTrendingPageForSong(songFromURL);
-  if (!opened) {
-    renderTrending(1);
-  }
-} else {
-  renderTrending(1);
-}
-
+renderTrending();
 
 const sorted=[...songs].sort((a,b)=>a.title.localeCompare(b.title));
 let index=-1;

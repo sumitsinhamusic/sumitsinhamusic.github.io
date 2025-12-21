@@ -536,7 +536,9 @@ function dragEnd(){
 }
 
 mini.addEventListener("mousedown", dragStart);
-mini.addEventListener("touchstart", dragStart, { passive:false });
+if (window.innerWidth > 768) {
+  mini.addEventListener("touchstart", dragStart, { passive:false });
+}
 
 document.addEventListener("mousemove", dragMove);
 document.addEventListener("touchmove", dragMove, { passive:false });

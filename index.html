@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sumit Sinha Music</title>
 
 <style>
@@ -94,19 +95,6 @@ nav a:hover{color:#fff}
   box-shadow:0 2px 5px rgba(0,0,0,.1);
 }
 
-/* ========== FOOTER ========== */
-footer{
-  background:#121212;
-  color:#aaa;
-  text-align:center;
-  padding:20px;
-}
-footer a{
-  color:#1db954;
-  text-decoration:none;
-}
-footer a:hover{color:#fff}
-
 /* ========== POPUP ========== */
 .popup{
   position:fixed;
@@ -181,6 +169,40 @@ body.popup-open{overflow:hidden}
   background:#aaa;
   cursor:not-allowed;
 }
+/* ========== MOBILE MINI PLAYER FIX ========== */
+@media (max-width: 768px) {
+  .now-playing {
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    border-radius: 14px 14px 0 0;
+    padding: 14px 12px;
+    gap: 12px;
+    box-sizing: border-box;
+  }
+
+  .now-playing button {
+    padding: 10px 14px;
+    font-size: 18px;
+    border-radius: 8px;
+  }
+
+  .now-playing .title {
+    font-size: 14px;
+    max-width: 100%;
+  }
+
+  #seekBar {
+    width: 100%;
+    height: 6px;
+  }
+
+  #currentTime,
+  #duration {
+    font-size: 12px;
+  }
+}
 
 .now-playing button:hover{background:#1ed760}
 .now-playing audio{display:none}
@@ -193,9 +215,7 @@ body.popup-open{overflow:hidden}
 <header>
     <nav>
       <a href="#home">Home</a>
-      <a href="#library">Songs Library</a>
       <a href="#news">News</a>
-      <a href="#movies">Movies/Web Series</a>
       <a href="#about">About</a>
     </nav>
     <img src="Sumit Sinha Music.png" alt="Logo" />
@@ -209,7 +229,7 @@ body.popup-open{overflow:hidden}
 </div>
 
 <!-- ===== SONGS ===== -->
-<div class="section" id="library">
+  <div class="section" id="library">
   <h2>🔥 Trending Songs</h2>
 
   <div class="songs-grid" id="trendingGrid"></div>
@@ -224,14 +244,22 @@ body.popup-open{overflow:hidden}
       <h3>Upcoming Song Release: Sumit Sinha Music</h3>
       <p>Releasing Jan 2026 — a soulful romantic track blending modern beats with classical vibes.</p>
     </div>
-    <div class="news-card" id="movies">
-      <h3>Web Series Collaboration</h3>
-      <p>Sumit Sinha Music will feature in an upcoming Netflix web-series with own soundtrack.</p>
-    </div>
-    <div class="news-card">
-      <h3>Movie Soundtrack Announcement</h3>
-      <p>New sound track to be part of a Bollywood movie releasing soon.</p>
-    </div>
+<!-- ===== FOOTER ===== -->
+<footer style="background:#1a1a1a; color:#fff; text-align:center; padding:20px; display:flex; justify-content:center; align-items:center; gap:20px; flex-wrap:wrap;">
+  
+  <!-- Copyright -->
+  <span>© 2025 Sumit Sinha</span>
+  
+  <!-- Social Icons -->
+  <a href="https://www.youtube.com/@SumitSinha5" target="_blank" style="display:inline-block;">
+    <img src="youtube-icon.png" alt="YouTube" style="height:30px;">
+  </a>
+  <a href="https://www.facebook.com/s.k.185" target="_blank" style="display:inline-block;">
+    <img src="facebook-icon.png" alt="Facebook" style="height:30px;">
+  </a>
+
+</footer>
+
 <!-- ===== ABOUT ===== -->
 <div class="section" id="about">
   <h3>ℹ️ About Sumit Sinha Music</h3>
@@ -245,13 +273,6 @@ body.popup-open{overflow:hidden}
     Explore the library, follow the latest news, and enjoy the journey of music and storytelling.
   </p>
 </div>
-
-<!-- ===== FOOTER ===== -->
-<footer>
-  © 2025 Sumit Sinha |
-  <a href="https://www.youtube.com/@SumitSinha5" target="_blank">YouTube</a> •
-  <a href="https://www.facebook.com/s.k.185" target="_blank">Facebook</a>
-</footer>
 
 <!-- ===== POPUP ===== -->
 <div class="popup" id="popup">
@@ -502,7 +523,9 @@ function dragEnd(){
 }
 
 mini.addEventListener("mousedown", dragStart);
-mini.addEventListener("touchstart", dragStart, { passive:false });
+if (window.innerWidth > 768) {
+  mini.addEventListener("touchstart", dragStart, { passive:false });
+}
 
 document.addEventListener("mousemove", dragMove);
 document.addEventListener("touchmove", dragMove, { passive:false });

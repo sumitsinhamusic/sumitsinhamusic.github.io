@@ -81,8 +81,9 @@ nav a:hover{color:#fff}
 
   scroll-behavior:smooth;
 
-  /* allow page vertical scroll */
-  touch-action: pan-y;
+  /* ✅ MOBILE FIX */
+  touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
 
   scrollbar-width:none;
 }

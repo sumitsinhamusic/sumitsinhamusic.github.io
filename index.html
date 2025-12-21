@@ -383,14 +383,17 @@ function renderTrending(page){
     div.className = "song-card";
     div.dataset.title = song.title;
     div.dataset.file = song.file;
+
+    if (songFromURL && song.title.toLowerCase() === songFromURL.toLowerCase()) {
+      div.classList.add("active");
+    }
+
     div.innerHTML = `<img src="${song.img}" class="album-art">`;
     grid.appendChild(div);
   });
 
   attachAlbumClicks();
   renderPagination();
-
-  // ✅ FIX SCROLL POSITION
   scrollToTrending();
 }
 
@@ -427,8 +430,30 @@ function attachAlbumClicks(){
     };
   });
 }
+function openTrendingPageForSong(songTitle){
+  const index = trendingSongs.findIndex(
+    s => s.title.toLowerCase() === songTitle.toLowerCase()
+  );
 
-renderTrending(1);
+  if (index === -1) return false; // not in trending
+
+  const page = Math.floor(index / perPage) + 1;
+  renderTrending(page);
+  return true;
+}
+
+const params = new URLSearchParams(window.location.search);
+const songFromURL = params.get("song");
+
+if (songFromURL) {
+  const opened = openTrendingPageForSong(songFromURL);
+  if (!opened) {
+    renderTrending(1);
+  }
+} else {
+  renderTrending(1);
+}
+
 
 const sorted=[...songs].sort((a,b)=>a.title.localeCompare(b.title));
 let index=-1;
@@ -486,22 +511,14 @@ document.addEventListener("mouseup", dragEnd);
 document.addEventListener("touchend", dragEnd);
 
 function playSong(song){
- index=sorted.indexOf(song);
- player.src=song.file;
+ index = sorted.findIndex(s => s.title === song.title);
+ player.src = song.file;
  player.play().catch(()=>{});
- titleEl.textContent=song.title;
- playBtn.textContent="⏸";
- playBtn.disabled=false;
+ titleEl.textContent = song.title;
+ playBtn.textContent = "⏸";
+ playBtn.disabled = false;
  history.replaceState({}, "", "?song="+encodeURIComponent(song.title));
 }
-
-/* CLICK ALBUM */
-document.querySelectorAll(".album-art").forEach(img=>{
- img.onclick=()=>{
-  const c=img.closest(".song-card");
-  playSong({title:c.dataset.title,file:c.dataset.file});
- };
-});
 
 /* CONTROLS */
 playBtn.onclick=()=>{
@@ -544,13 +561,6 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-/* AUTO PLAY FROM URL */
-window.onload=()=>{
- const t=new URLSearchParams(location.search).get("song");
- if(!t)return;
- const s=sorted.find(x=>x.title===t);
- if(s){player.src=s.file;titleEl.textContent=s.title;playBtn.disabled=false;}
-};
 /* ===== SEEK BAR & TIME ===== */
 const seekBar = document.getElementById("seekBar");
 const currentTimeEl = document.getElementById("currentTime");

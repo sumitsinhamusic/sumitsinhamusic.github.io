@@ -66,16 +66,29 @@ nav a:hover{color:#fff}
 
 /* ========== SONG GRID ========== */
 .songs-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  display:flex;
   gap:20px;
+  overflow-x:auto;
+  padding-bottom:10px;
+  scroll-behavior:smooth;
 }
+
+.songs-grid::-webkit-scrollbar{
+  height:8px;
+}
+.songs-grid::-webkit-scrollbar-track{
+  background:#e0e0e0;
+  border-radius:10px;
+}
+.songs-grid::-webkit-scrollbar-thumb{
+  background:#1db954;
+  border-radius:10px;
+}
+
+/* Song cards fixed width for horizontal scroll */
 .song-card{
-  background:#fff;
-  border-radius:8px;
-  box-shadow:0 2px 5px rgba(0,0,0,.1);
-  padding:12px;
-  transition:.2s;
+  min-width:220px;
+  flex-shrink:0;
 }
 .song-card:hover{transform:scale(1.03)}
 .song-card img{
@@ -233,8 +246,6 @@ body.popup-open{overflow:hidden}
   <h2>🔥 Trending Songs</h2>
 
   <div class="songs-grid" id="trendingGrid"></div>
-
-<div id="pagination" style="text-align:center;margin:20px 0;"></div>
 </div>
 
 <!-- ===== NEWS ===== -->
@@ -386,62 +397,30 @@ function scrollToTrending() {
   });
 }
 
-const perPage = 12;
-let currentPage = 1;
-
 const grid = document.getElementById("trendingGrid");
-const pager = document.getElementById("pagination");
 
-function renderTrending(page){
+function renderTrending(){
   grid.innerHTML = "";
-  currentPage = page;
 
-  const start = (page - 1) * perPage;
-  const end = start + perPage;
-
-  trendingSongs.slice(start, end).forEach(song=>{
+  trendingSongs.forEach(song=>{
     const div = document.createElement("div");
     div.className = "song-card";
     div.dataset.title = song.title;
     div.dataset.file = song.file;
-
-    if (songFromURL && song.title.toLowerCase() === songFromURL.toLowerCase()) {
-      div.classList.add("active");
-    }
 
     div.innerHTML = `<img src="${song.img}" class="album-art">`;
     grid.appendChild(div);
   });
 
   attachAlbumClicks();
-  renderPagination();
-  scrollToTrending();
 }
-
-function renderPagination(){
-  pager.innerHTML = "";
-  const totalPages = Math.ceil(trendingSongs.length / perPage);
-
-  const prev = document.createElement("button");
-  prev.textContent = "Prev";
-  prev.disabled = currentPage === 1;
-  prev.onclick = ()=>renderTrending(currentPage-1);
-  pager.appendChild(prev);
-
-  for(let i=1;i<=totalPages;i++){
-    const btn = document.createElement("button");
-    btn.textContent = i;
-    if(i===currentPage) btn.classList.add("active");
-    btn.onclick = ()=>renderTrending(i);
-    pager.appendChild(btn);
+renderTrending();
+grid.addEventListener("wheel", (e) => {
+  if (e.deltaY !== 0) {
+    e.preventDefault();
+    grid.scrollLeft += e.deltaY;
   }
-
-  const next = document.createElement("button");
-  next.textContent = "Next";
-  next.disabled = currentPage === totalPages;
-  next.onclick = ()=>renderTrending(currentPage+1);
-  pager.appendChild(next);
-}
+}, { passive:false });
 
 function attachAlbumClicks(){
   document.querySelectorAll(".album-art").forEach(img=>{
@@ -450,17 +429,6 @@ function attachAlbumClicks(){
       playSong({title:c.dataset.title,file:c.dataset.file});
     };
   });
-}
-function openTrendingPageForSong(songTitle){
-  const index = trendingSongs.findIndex(
-    s => s.title.toLowerCase() === songTitle.toLowerCase()
-  );
-
-  if (index === -1) return false; // not in trending
-
-  const page = Math.floor(index / perPage) + 1;
-  renderTrending(page);
-  return true;
 }
 
 const params = new URLSearchParams(window.location.search);

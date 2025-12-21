@@ -181,6 +181,40 @@ body.popup-open{overflow:hidden}
   background:#aaa;
   cursor:not-allowed;
 }
+/* ========== MOBILE MINI PLAYER FIX ========== */
+@media (max-width: 768px) {
+  .now-playing {
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    border-radius: 14px 14px 0 0;
+    padding: 14px 12px;
+    gap: 12px;
+    box-sizing: border-box;
+  }
+
+  .now-playing button {
+    padding: 10px 14px;
+    font-size: 18px;
+    border-radius: 8px;
+  }
+
+  .now-playing .title {
+    font-size: 14px;
+    max-width: 100%;
+  }
+
+  #seekBar {
+    width: 100%;
+    height: 6px;
+  }
+
+  #currentTime,
+  #duration {
+    font-size: 12px;
+  }
+}
 
 .now-playing button:hover{background:#1ed760}
 .now-playing audio{display:none}
@@ -640,4 +674,3 @@ document.querySelectorAll("nav a").forEach(link => {
 </script>
 </body>
 </html>
-

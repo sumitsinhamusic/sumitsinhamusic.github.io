@@ -580,6 +580,13 @@ function playSong(song){
  playBtn.textContent = "⏸";
  playBtn.disabled = false;
  history.replaceState({}, "", "?song="+encodeURIComponent(song.title));
+ /* 🎯 GA4 TRACK SONG PLAY */
+ if (typeof gtag === "function") {
+   gtag('event', 'song_play', {
+     song_title: song.title,
+     file_name: song.file
+   });
+ }
 }
 
 /* CONTROLS */
